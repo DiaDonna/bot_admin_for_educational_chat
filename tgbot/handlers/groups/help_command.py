@@ -15,6 +15,7 @@ async def help_command(message: Message) -> None:
         """
 
     # текст для пользователя с полезными ссылками
+    # test = await message.bot.get_my_default_administrator_rights()
     helping_text: str = \
         (f'Привет, {message.from_user.first_name}!'
          
@@ -48,4 +49,4 @@ async def help_command(message: Message) -> None:
 
 
 def register_help_command(dp: Dispatcher):
-    dp.register_message_handler(help_command, commands=['help'], commands_prefix='!', state="*")
+    dp.register_message_handler(help_command, commands=['help'], commands_prefix='!/', state="*")

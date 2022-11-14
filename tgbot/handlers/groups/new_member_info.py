@@ -1,11 +1,11 @@
-from aiogram import Dispatcher
+from aiogram import Dispatcher, types
 from aiogram.types import Message
 
 
 async def new_member_info(message: Message) -> None:
     """ Хендлер для приветствия нового пользователя группы с полезными ссылками. """
 
-    # текст приветствия нового пользователя с поелзными ссылками
+    # текст приветствия нового пользователя с полезными ссылками
     greeting: str = \
         (f'Привет, {message.new_chat_members[0].first_name}!\n\n'
          f'Прежде чем задавать вопросы - прочитай <b>базовые советы по дипломному проекту:</b> '
@@ -17,4 +17,4 @@ async def new_member_info(message: Message) -> None:
 
 
 def register_new_member_info(dp: Dispatcher):
-    dp.register_message_handler(new_member_info, content_types=['NEW_CHAT_MEMBERS'])
+    dp.register_message_handler(new_member_info, content_types=types.ContentTypes.NEW_CHAT_MEMBERS)

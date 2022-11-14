@@ -1,5 +1,13 @@
+import logging
+from contextlib import suppress
+
 from aiogram import Dispatcher
-from aiogram.types import Message
+from aiogram.types import Message, ChatType
+from aiogram.utils.exceptions import BadRequest, MessageCantBeDeleted
+from magic_filter import F
+
+from tgbot.utils.chat_t import chat_types
+from tgbot.utils.get_user_link import get_link
 
 
 async def ban_to_user(message: Message) -> None:
@@ -11,19 +19,28 @@ async def ban_to_user(message: Message) -> None:
     В противном случае админу отправляется сообщение с просьбой ввести команду корректно.
     """
 
-    reason_for_ban: str = message.text[3:]  # причина бана, описанная админом в команде
+    logger = logging.getLogger(__name__)
+
+    reason_for_ban: str = " ".join(message.text.split()[1:])
 
     try:
-        await message.bot.send_message(chat_id=message.chat.id,
-                                       text=f'Пользователь {message.reply_to_message.from_user.id} '
-                                            f'забанен по причине: {reason_for_ban}')
         await message.bot.ban_chat_member(chat_id=message.chat.id, user_id=message.reply_to_message.from_user.id)
-
-    except AttributeError:
-        await message.delete()
-        await message.answer('Введите команду <i>!b</i> <b>в ответе на сообщение</b> от того пользователя, '
-                             'которого хотите <i>забанить</i>')
+        logger.info("User {user} baned by {admin}".format(
+            user=message.reply_to_message.from_user.id,
+            admin=message.from_user.id))
+        await message.reply_to_message.answer(text=f'Пользователь {message.reply_to_message.from_user.get_mention()} '
+                                                   f'забанен по причине: {reason_for_ban}')
+    except BadRequest as e:
+        logger.error("Failed to ban chat member: {error!r}", exc_info=e)
+        with suppress(MessageCantBeDeleted):
+            await message.delete()
 
 
 def register_bun_to_user(dp: Dispatcher) -> None:
-    dp.register_message_handler(ban_to_user, commands=["b"], commands_prefix='!', state="*", is_admin=True)
+    dp.register_message_handler(ban_to_user,
+                                F.ilter(F.reply_to_message),
+                                chat_type=chat_types(),
+                                commands=["b", "ban"],
+                                commands_prefix='!',
+                                state="*",
+                                is_admin=True)
