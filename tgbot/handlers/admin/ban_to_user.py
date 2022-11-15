@@ -2,7 +2,7 @@ import logging
 from contextlib import suppress
 
 from aiogram import Dispatcher
-from aiogram.types import Message, ChatType
+from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest, MessageCantBeDeleted
 from magic_filter import F
 
@@ -10,7 +10,7 @@ from tgbot.utils.chat_t import chat_types
 from tgbot.utils.get_user_link import get_link
 
 
-async def ban_to_user(message: Message) -> None:
+async def ban(message: Message) -> None:
     """
     Хендлер для команды !b для роли ADMIN
 
@@ -29,15 +29,15 @@ async def ban_to_user(message: Message) -> None:
             user=message.reply_to_message.from_user.id,
             admin=message.from_user.id))
         await message.reply_to_message.answer(text=f'Пользователь {message.reply_to_message.from_user.get_mention()} '
-                                                   f'забанен по причине: {reason_for_ban}')
+                                                   f'<b>забанен</b> по причине: {reason_for_ban}')
     except BadRequest as e:
         logger.error("Failed to ban chat member: {error!r}", exc_info=e)
         with suppress(MessageCantBeDeleted):
             await message.delete()
 
 
-def register_bun_to_user(dp: Dispatcher) -> None:
-    dp.register_message_handler(ban_to_user,
+def register_bun(dp: Dispatcher) -> None:
+    dp.register_message_handler(ban,
                                 F.ilter(F.reply_to_message),
                                 chat_type=chat_types(),
                                 commands=["b", "ban"],

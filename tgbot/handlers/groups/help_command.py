@@ -1,3 +1,5 @@
+import logging
+
 from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation
@@ -14,10 +16,12 @@ async def help_command(message: Message) -> None:
         высылается соответствующее сообщение.
         """
 
-    # текст для пользователя с полезными ссылками
     # test = await message.bot.get_my_default_administrator_rights()
+    logger = logging.getLogger(__name__)
+
+    # текст для пользователя с полезными ссылками
     helping_text: str = \
-        (f'Привет, {message.from_user.first_name}!'
+        (f'Привет, {message.from_user.get_mention()}!'
          
          f'\n\nСсылка на <b>базовые советы по дипломному проекту:</b>'
          f'<a href="https://magnetic-evergreen-187.notion.site/Python-Basic-3ac614e60b7e434e9d9c018023319c04"> ТУТ </a>'
@@ -36,17 +40,27 @@ async def help_command(message: Message) -> None:
         await message.bot.send_message(chat_id=message.from_user.id,
                                        text=helping_text,
                                        disable_web_page_preview=True)
+        logger.info("Bot send to user {user} help-message".format(
+            user=message.from_user.id))
         await message.delete()
 
-    except BotBlocked:
+    except BotBlocked as e:
+        logger.error("Failed to send help-message to User {user}: {error!r}".format(
+            user=message.from_user.id,
+            error=e)
+        )
         await message.reply(f'Я не могу написать вам, т.к. вы приостановили диалог со мной.\n'
                             f'Возобновите диалог и попробуйте снова:\n'
                             f'@EducationalChatAdmin_bot')
-    except CantInitiateConversation:
+    except CantInitiateConversation as e:
+        logger.error("Failed to send help-message to User {user}: {error!r}".format(
+            user=message.from_user.id,
+            error=e)
+        )
         await message.reply(f'Я не могу написать вам, т.к. вы не инициализировали диалог со мной.\n'
                             f'Отправьте команду <i>/start</i> мне в ЛС:\n'
                             f'@EducationalChatAdmin_bot')
 
 
 def register_help_command(dp: Dispatcher):
-    dp.register_message_handler(help_command, commands=['help'], commands_prefix='!/', state="*")
+    dp.register_message_handler(help_command, commands=['help'], commands_prefix='!/', state='*')

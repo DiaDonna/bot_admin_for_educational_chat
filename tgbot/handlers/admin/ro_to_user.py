@@ -29,7 +29,8 @@ async def ro(message: Message) -> None:
         logger.error("Failed to restrict chat member: {error!r}", exc_info=e)
 
     await message.reply_to_message.answer(
-        "<b>Режим только чтения</b> активирован для пользователя {user}. Продолжительность: {duration}".format(
+        "<b>Режим &#171;только чтениe&#187;</b> активирован для пользователя {user}."
+        "\nПродолжительность: {duration}".format(
             user=message.reply_to_message.from_user.get_mention(),
             duration=format_timedelta(
                 duration, locale='ru', granularity="second", format="short"

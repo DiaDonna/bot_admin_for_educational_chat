@@ -8,9 +8,8 @@ from aiogram.types import AllowedUpdates
 from tgbot.config import load_config
 from tgbot.filters.admin import AdminFilter
 from tgbot.handlers.admin.admin import register_admin
-from tgbot.handlers.admin.ban_to_user import register_bun_to_user
+from tgbot.handlers.admin.ban_to_user import register_bun
 from tgbot.handlers.admin.ro_to_user import register_ro
-from tgbot.handlers.admin.set_readonly_to_user import register_set_readonly_to_user
 from tgbot.handlers.groups.user import register_user
 from tgbot.handlers.groups.new_member_info import register_new_member_info
 from tgbot.handlers.groups.help_command import register_help_command
@@ -29,9 +28,8 @@ def register_all_filters(dp):
 
 def register_all_handlers(dp):
     register_admin(dp)
-    register_bun_to_user(dp)
+    register_bun(dp)
     register_ro(dp)
-    register_set_readonly_to_user(dp)
 
     register_user(dp)
     register_help_command(dp)
