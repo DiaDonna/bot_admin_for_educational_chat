@@ -1,8 +1,10 @@
 import logging
 
 from aiogram import Dispatcher
-from aiogram.types import Message
+from aiogram.types import Message, ChatType
 from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation
+
+from tgbot.utils.chat_t import chat_types
 
 
 async def help_command(message: Message) -> None:
@@ -14,11 +16,12 @@ async def help_command(message: Message) -> None:
 
         В случаях если диалог с ботом не был инициализирован пользователем или бот был приостановлен, то пользователю
         высылается соответствующее сообщение.
+
+        Command can be used for getting different useful links
+        Command can be writen in Private chat or in Group
         """
 
-    # test = await message.bot.get_my_default_administrator_rights()
     logger = logging.getLogger(__name__)
-
     # текст для пользователя с полезными ссылками
     helping_text: str = \
         (f'Привет, {message.from_user.get_mention()}!'
@@ -63,4 +66,9 @@ async def help_command(message: Message) -> None:
 
 
 def register_help_command(dp: Dispatcher):
-    dp.register_message_handler(help_command, commands=['help'], commands_prefix='!/', state='*')
+
+    dp.register_message_handler(help_command,
+                                chat_type=chat_types() + [ChatType.PRIVATE],
+                                commands=['help'],
+                                commands_prefix='!/',
+                                state='*')

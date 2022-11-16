@@ -1,5 +1,4 @@
 import logging
-from contextlib import suppress
 
 from aiogram import Dispatcher
 from aiogram.types import Message
@@ -7,7 +6,6 @@ from aiogram.utils.exceptions import BadRequest, MessageCantBeDeleted
 from magic_filter import F
 
 from tgbot.utils.chat_t import chat_types
-from tgbot.utils.get_user_link import get_link
 
 
 async def ban(message: Message) -> None:
@@ -16,7 +14,11 @@ async def ban(message: Message) -> None:
 
     Команда позволяет банить пользователя с описанием причины.
     Команду необходимо писать в ответе пересылаемого сообщения от того пользователя, которого нужно забанить.
-    В противном случае админу отправляется сообщение с просьбой ввести команду корректно.
+
+    Handler for commands !b, !ban, only for ADMIN
+
+    Command can be used for ban users with description of the reasons.
+    You should write this command in response to a message from the user you want to ban.
     """
 
     logger = logging.getLogger(__name__)
@@ -32,14 +34,13 @@ async def ban(message: Message) -> None:
                                                    f'<b>забанен</b> по причине: {reason_for_ban}')
     except BadRequest as e:
         logger.error("Failed to ban chat member: {error!r}", exc_info=e)
-        with suppress(MessageCantBeDeleted):
-            await message.delete()
 
 
 def register_bun(dp: Dispatcher) -> None:
     dp.register_message_handler(ban,
                                 F.ilter(F.reply_to_message),
                                 chat_type=chat_types(),
+                                bot_can_restrict=True,
                                 commands=["b", "ban"],
                                 commands_prefix='!',
                                 state="*",

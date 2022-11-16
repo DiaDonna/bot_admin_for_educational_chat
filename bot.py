@@ -3,27 +3,34 @@ import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import AllowedUpdates
 
 from tgbot.config import load_config
 from tgbot.filters.admin import AdminFilter
+from tgbot.filters.permissions import BotPermission
 from tgbot.handlers.admin.admin import register_admin
 from tgbot.handlers.admin.ban_to_user import register_bun
 from tgbot.handlers.admin.ro_to_user import register_ro
+from tgbot.handlers.groups.hastebin import register_paste_command
 from tgbot.handlers.groups.user import register_user
 from tgbot.handlers.groups.new_member_info import register_new_member_info
 from tgbot.handlers.groups.help_command import register_help_command
+from tgbot.middlewares.check_groups import VerifiedGroupsMiddleware
 from tgbot.middlewares.environment import EnvironmentMiddleware
 
 logger = logging.getLogger(__name__)
 
 
 def register_all_middlewares(dp, config):
+    dp.setup_middleware(LoggingMiddleware())
     dp.setup_middleware(EnvironmentMiddleware(config=config))
+    dp.setup_middleware(VerifiedGroupsMiddleware())
 
 
 def register_all_filters(dp):
     dp.filters_factory.bind(AdminFilter)
+    dp.filters_factory.bind(BotPermission)
 
 
 def register_all_handlers(dp):
@@ -34,6 +41,7 @@ def register_all_handlers(dp):
     register_user(dp)
     register_help_command(dp)
     register_new_member_info(dp)
+    register_paste_command(dp)
 
 
 async def main():

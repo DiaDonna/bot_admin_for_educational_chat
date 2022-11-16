@@ -11,6 +11,15 @@ from tgbot.utils.timedelta import parse_timedelta_from_message
 
 
 async def ro(message: Message) -> None:
+    """
+    Хендлер для команды !ro для роли ADMIN
+
+    Команда позволяет перевести пользователя в режим только чтения с указанием продолжительности ограничения.
+    Команду необходимо писать в ответе пересылаемого сообщения от того пользователя, которого нужно забанить.
+
+    Command can be used for turning on mode read-only for users, you can write duration of this restriction.
+    You should write this command in response to a message from the user you want to block.
+    """
     logger = logging.getLogger(__name__)
     duration = await parse_timedelta_from_message(message)
     if not duration:
@@ -43,6 +52,7 @@ def register_ro(dp: Dispatcher) -> None:
     dp.register_message_handler(ro,
                                 F.ilter(F.reply_to_message),
                                 chat_type=chat_types(),
+                                bot_can_restrict=True,
                                 commands=["ro"],
                                 commands_prefix='!',
                                 state="*",

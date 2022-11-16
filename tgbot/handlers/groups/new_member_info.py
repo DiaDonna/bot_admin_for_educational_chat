@@ -5,7 +5,11 @@ from aiogram.types import Message
 
 
 async def new_member_info(message: Message) -> None:
-    """ Хендлер для приветствия нового пользователя группы с полезными ссылками. """
+    """
+    Хендлер для приветствия нового пользователя группы с полезными ссылками.
+
+    Handler for greeting new user in group and sending to him some useful links
+    """
 
     logger = logging.getLogger(__name__)
 
@@ -19,9 +23,10 @@ async def new_member_info(message: Message) -> None:
 
     await message.answer(text=greeting, disable_web_page_preview=True)
     logger.info("New User {user} was greeting".format(
-            user=message.new_chat_members[0].id)
+        user=message.new_chat_members[0].id)
     )
 
 
 def register_new_member_info(dp: Dispatcher):
-    dp.register_message_handler(new_member_info, content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
+    dp.register_message_handler(new_member_info,
+                                content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
