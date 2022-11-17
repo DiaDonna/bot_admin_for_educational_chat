@@ -2,7 +2,7 @@ import logging
 
 from aiogram import Dispatcher
 from aiogram.types import Message
-from aiogram.utils.exceptions import BadRequest, MessageCantBeDeleted
+from aiogram.utils.exceptions import BadRequest
 from magic_filter import F
 
 from tgbot.utils.chat_t import chat_types
