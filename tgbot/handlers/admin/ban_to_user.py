@@ -40,7 +40,6 @@ def register_bun(dp: Dispatcher) -> None:
     dp.register_message_handler(ban,
                                 F.ilter(F.reply_to_message),
                                 chat_type=chat_types(),
-                                bot_can_restrict=True,
                                 commands=["b", "ban"],
                                 commands_prefix='!',
                                 state="*",
