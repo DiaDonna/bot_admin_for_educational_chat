@@ -22,10 +22,6 @@ class VerifiedGroupsMiddleware(BaseMiddleware):
         # Get current handler
         handler = current_handler.get()
 
-        # Get dispatcher from context
-        dispatcher = Dispatcher.get_current()
-
-        # If handler was configured, get rate limit and key from handler
         if not handler:
             return
         if message.chat.id not in data['config'].misc.verified_groups and message.chat.type != ChatType.PRIVATE:
