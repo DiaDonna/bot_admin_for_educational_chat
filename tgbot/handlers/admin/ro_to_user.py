@@ -1,8 +1,9 @@
 import logging
 
 from aiogram import Dispatcher
+from aiogram.dispatcher.handler import CancelHandler
 from aiogram.types import Message
-from aiogram.utils.exceptions import BadRequest
+from aiogram.utils.exceptions import BadRequest, CantRestrictChatOwner
 from babel.dates import format_timedelta
 from magic_filter import F
 
@@ -34,25 +35,23 @@ async def ro(message: Message) -> None:
             admin=message.from_user.id,
             duration=duration)
         )
+        await message.reply_to_message.answer(
+            "<b>Режим &#171;только чтениe&#187;</b> активирован для пользователя {user}."
+            "\nПродолжительность: {duration}".format(
+                user=message.reply_to_message.from_user.get_mention(),
+                duration=format_timedelta(
+                    duration, locale='ru', granularity="second", format="short"
+                ),
+            )
+        )
     except BadRequest as e:
         logger.error("Failed to restrict chat member: {error!r}", exc_info=e)
-
-    await message.reply_to_message.answer(
-        "<b>Режим &#171;только чтениe&#187;</b> активирован для пользователя {user}."
-        "\nПродолжительность: {duration}".format(
-            user=message.reply_to_message.from_user.get_mention(),
-            duration=format_timedelta(
-                duration, locale='ru', granularity="second", format="short"
-            ),
-        )
-    )
 
 
 def register_ro(dp: Dispatcher) -> None:
     dp.register_message_handler(ro,
                                 F.ilter(F.reply_to_message),
                                 chat_type=chat_types(),
-                                bot_can_restrict=True,
                                 commands=["ro"],
                                 commands_prefix='!',
                                 state="*",
