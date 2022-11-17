@@ -16,6 +16,7 @@ class VerifiedGroupsMiddleware(BaseMiddleware):
     async def on_process_message(self, message: types.Message, data: dict):
         """
         This handler is called when dispatcher receives a message
+        :param data:
         :param message:
         """
         # Get current handler
@@ -23,6 +24,7 @@ class VerifiedGroupsMiddleware(BaseMiddleware):
 
         # Get dispatcher from context
         dispatcher = Dispatcher.get_current()
+
         # If handler was configured, get rate limit and key from handler
         if not handler:
             return

@@ -43,7 +43,7 @@ async def text_report_admins(message: types.Message, config: Config):
     else:
         chat_label = quote_html(repr(message.chat.title))
 
-    text = "[ALERT] User {user} is reported message in chat {chat}.".format(
+    text = "[ALERT] Пользователь {user} пожаловался на сообщение в чате {chat}.".format(
         user=message.from_user.get_mention(),
         chat=chat_label,
     )
