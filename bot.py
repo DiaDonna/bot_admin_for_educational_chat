@@ -62,14 +62,13 @@ async def main():
     register_all_filters(dp)
     register_all_handlers(dp)
 
-    # start
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(
-            allowed_updates=AllowedUpdates.MESSAGE +
-                            AllowedUpdates.CHAT_MEMBER +
-                            AllowedUpdates.CALLBACK_QUERY +
-                            AllowedUpdates.EDITED_MESSAGE)
+            allowed_updates=(AllowedUpdates.MESSAGE
+                             or AllowedUpdates.CHAT_MEMBER
+                             or AllowedUpdates.CALLBACK_QUERY
+                             or AllowedUpdates.EDITED_MESSAGE))
     finally:
         await dp.storage.close()
         await dp.storage.wait_closed()

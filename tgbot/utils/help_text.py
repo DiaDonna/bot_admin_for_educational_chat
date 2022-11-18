@@ -5,10 +5,19 @@ from aiogram.types import Message
 from tgbot.filters.admin import AdminFilter
 
 
-async def choice_for_helping_text(message: Message, admins: List[int]):
-    is_admin = await AdminFilter.check(message=message)
+async def choice_for_helping_text(message: Message, admins: List[int]) -> str:
+    """ Функция для корректировки отправляемого текста на команду help в зависимости от роли (юзер/админ)
 
-    if is_admin or (message.from_user.id in admins):
+    :param message: объект сообщения от пользователя;
+    :param admins: список ID администраторов, указанных в переменной окружения
+
+    :return: текст для команды help
+    """
+
+    is_admin: bool = await AdminFilter.check(message=message)  # проверка на админа в чате
+    in_admins: bool = message.from_user.id in admins  # проверка на наличие ID админа в переменной окружения
+
+    if is_admin or in_admins:
         helping_text: str = \
             (f'Привет, администратор {message.from_user.get_mention()}!'
 
