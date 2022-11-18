@@ -59,8 +59,8 @@ async def parse_timedelta_from_message(message: types.Message) -> datetime.timed
 
     try:
         duration: datetime.timedelta = parse_timedelta(args[0])
-        if duration <= datetime.timedelta(seconds=30):
-            return datetime.timedelta(seconds=30)
+        if duration <= datetime.timedelta(minutes=1):
+            return datetime.timedelta(minutes=1)
         return duration
 
     except TimedeltaParseError:

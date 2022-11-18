@@ -9,6 +9,7 @@ from aiogram.utils.markdown import hlink
 
 from tgbot.config import Config
 from tgbot.utils.chat_t import chat_types
+from tgbot.utils.log_config import logger
 
 
 async def text_report_admins(message: types.Message, config: Config):
@@ -22,7 +23,6 @@ async def text_report_admins(message: types.Message, config: Config):
     You should write this command in response to a message you to report.
     """
 
-    logger = logging.getLogger(__name__)
     logger.info(
         "User {user} report message {message} in chat {chat} from user {from_user}".format(
             user=message.from_user.id,

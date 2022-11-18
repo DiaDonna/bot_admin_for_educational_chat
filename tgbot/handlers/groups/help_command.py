@@ -8,6 +8,7 @@ from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation, Teleg
 from tgbot.config import Config
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.help_text import choice_for_helping_text
+from tgbot.utils.log_config import logger
 
 
 async def help_command(message: Message, config: Config) -> None:
@@ -25,10 +26,9 @@ async def help_command(message: Message, config: Config) -> None:
         Command can be writen in Private chat or in Group
         """
 
-    logger = logging.getLogger(__name__)
-
     admins_ids: list[int] = config.tg_bot.admin_ids
     helping_text: str = await choice_for_helping_text(message, admins_ids)
+    bot_user = await message.bot.get_me()
 
     try:
         await message.bot.send_message(chat_id=message.from_user.id,
@@ -48,7 +48,7 @@ async def help_command(message: Message, config: Config) -> None:
         )
         await message.reply(f'Я не могу написать вам, т.к. вы приостановили диалог со мной.\n'
                             f'Возобновите диалог и попробуйте снова:\n'
-                            f'@EducationalChatAdmin_bot')
+                            f'@{bot_user.username}')
 
     except CantInitiateConversation as e:
         logger.error("Failed to send help-message to User {user}: {error!r}".format(
@@ -57,7 +57,7 @@ async def help_command(message: Message, config: Config) -> None:
         )
         await message.reply(f'Я не могу написать вам, т.к. вы не инициализировали диалог со мной.\n'
                             f'Отправьте команду <i>/start</i> мне в ЛС:\n'
-                            f'@EducationalChatAdmin_bot')
+                            f'@{bot_user.username}')
 
 
 def register_help_command(dp: Dispatcher):

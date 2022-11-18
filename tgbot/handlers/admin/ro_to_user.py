@@ -9,6 +9,7 @@ from aiogram.utils.exceptions import BadRequest
 
 from tgbot.filters.admin import AdminFilter
 from tgbot.utils.chat_t import chat_types
+from tgbot.utils.log_config import logger
 from tgbot.utils.timedelta import parse_timedelta_from_message
 
 
@@ -22,7 +23,6 @@ async def ro(message: Message) -> None:
     Command can be used for turning on mode read-only for users, you can write duration of this restriction.
     You should write this command in response to a message from the user you want to block.
     """
-    logger = logging.getLogger(__name__)
 
     is_bot: bool = message.reply_to_message.from_user.is_bot
     is_admin: bool = await AdminFilter.check(message.reply_to_message)

@@ -7,6 +7,7 @@ from aiogram.utils.exceptions import BadRequest, CantRestrictChatOwner, UserIsAn
 
 from tgbot.utils.chat_t import chat_types
 from tgbot.filters.admin import AdminFilter
+from tgbot.utils.log_config import logger
 
 
 async def ban(message: Message) -> None:
@@ -19,8 +20,6 @@ async def ban(message: Message) -> None:
     Command can be used for ban users with description of the reasons.
     You should write this command in response to a message from the user you want to ban.
     """
-
-    logger = logging.getLogger(__name__)
 
     reason_for_ban: str = " ".join(message.text.split()[1:])
 

@@ -3,6 +3,8 @@ import logging
 from aiogram import Dispatcher, types
 from aiogram.types import Message
 
+from tgbot.utils.log_config import logger
+
 
 async def new_member_info(message: Message) -> None:
     """
@@ -11,7 +13,6 @@ async def new_member_info(message: Message) -> None:
     Handler for greeting new user in group and sending to him some useful links
     """
 
-    logger = logging.getLogger(__name__)
 
     # текст приветствия нового пользователя с полезными ссылками
     greeting: str = (f'Привет, {message.new_chat_members[0].get_mention()}!\n\n'

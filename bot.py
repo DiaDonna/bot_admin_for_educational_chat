@@ -18,8 +18,7 @@ from tgbot.handlers.groups.new_member_info import register_new_member_info
 from tgbot.handlers.groups.help_command import register_help_command
 from tgbot.middlewares.check_groups import VerifiedGroupsMiddleware
 from tgbot.middlewares.environment import EnvironmentMiddleware
-
-logger = logging.getLogger(__name__)
+from tgbot.utils.log_config import logger
 
 
 def register_all_middlewares(dp, config):
