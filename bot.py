@@ -18,8 +18,7 @@ from tgbot.handlers.groups.new_member_info import register_new_member_info
 from tgbot.handlers.groups.help_command import register_help_command
 from tgbot.middlewares.check_groups import VerifiedGroupsMiddleware
 from tgbot.middlewares.environment import EnvironmentMiddleware
-
-logger = logging.getLogger(__name__)
+from tgbot.utils.log_config import logger
 
 
 def register_all_middlewares(dp, config):
@@ -62,14 +61,13 @@ async def main():
     register_all_filters(dp)
     register_all_handlers(dp)
 
-    # start
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(
-            allowed_updates=AllowedUpdates.MESSAGE +
-                            AllowedUpdates.CHAT_MEMBER +
-                            AllowedUpdates.CALLBACK_QUERY +
-                            AllowedUpdates.EDITED_MESSAGE)
+            allowed_updates=(AllowedUpdates.MESSAGE
+                             or AllowedUpdates.CHAT_MEMBER
+                             or AllowedUpdates.CALLBACK_QUERY
+                             or AllowedUpdates.EDITED_MESSAGE))
     finally:
         await dp.storage.close()
         await dp.storage.wait_closed()

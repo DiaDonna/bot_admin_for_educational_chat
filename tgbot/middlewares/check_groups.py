@@ -19,7 +19,7 @@ class VerifiedGroupsMiddleware(BaseMiddleware):
         :param data:
         :param message:
         """
-        # Get current handler
+
         handler = current_handler.get()
 
         if not handler:
