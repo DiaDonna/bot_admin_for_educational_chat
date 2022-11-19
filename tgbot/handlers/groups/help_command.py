@@ -1,4 +1,3 @@
-import logging
 from contextlib import suppress
 
 from aiogram import Dispatcher
@@ -6,6 +5,7 @@ from aiogram.types import Message, ChatType
 from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation, TelegramAPIError
 
 from tgbot.config import Config
+from tgbot.utils.admin_ids import get_admins_ids
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.help_text import choice_for_helping_text
 from tgbot.utils.log_config import logger
@@ -26,7 +26,7 @@ async def help_command(message: Message, config: Config) -> None:
         Command can be writen in Private chat or in Group
         """
 
-    admins_ids: list[int] = config.tg_bot.admin_ids
+    admins_ids: list[int] = await get_admins_ids(message=message, config=config)
     helping_text: str = await choice_for_helping_text(message, admins_ids)
     bot_user = await message.bot.get_me()
 

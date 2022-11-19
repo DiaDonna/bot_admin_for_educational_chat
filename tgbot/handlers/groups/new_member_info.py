@@ -1,5 +1,3 @@
-import logging
-
 from aiogram import Dispatcher, types
 from aiogram.types import Message
 
@@ -14,7 +12,7 @@ async def new_member_info(message: Message) -> None:
     """
 
     bot_user = await message.bot.get_me()
-    # текст приветствия нового пользователя с полезными ссылками
+
     greeting: str = (f'Привет, {message.new_chat_members[0].get_mention()}!\n\n'
                      f'Прежде чем задавать вопросы - прочитай <b>базовые советы по дипломному проекту:</b> '
                      f'<a href="https://magnetic-evergreen-187.notion.site/Python-Basic'

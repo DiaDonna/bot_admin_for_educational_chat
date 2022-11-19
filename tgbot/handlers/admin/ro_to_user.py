@@ -1,4 +1,3 @@
-import logging
 from babel.dates import format_timedelta
 from datetime import timedelta
 from magic_filter import F
