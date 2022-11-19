@@ -25,7 +25,7 @@ def parse_timedelta(value: str) -> datetime.timedelta:
      аргумента к типу timedelta.
 
      :param value: аргументы команды !ro
-     :return: объект типа timedelta
+     :return: объект типа timedelta (если команда была передана без аргументов, то назначается 15 минут по умолчанию)
      """
 
     match = LINE_PATTERN.match(value)

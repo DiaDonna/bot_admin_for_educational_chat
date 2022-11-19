@@ -1,4 +1,3 @@
-import logging
 import logging.config
 
 
@@ -27,7 +26,7 @@ dictLogConfig = {
         "fileDebug": {
             "class": "logging.handlers.RotatingFileHandler",
             "mode": "a",
-            "maxBytes": 5242880,
+            "maxBytes": 5 * 1024 * 1024,
             "backupCount": 0,
             "delay": False,
             "formatter": "myFormatter",
@@ -38,7 +37,7 @@ dictLogConfig = {
         "fileInfo": {
             "class": "logging.handlers.RotatingFileHandler",
             "mode": "a",
-            "maxBytes": 5242880,
+            "maxBytes": 5 * 1024 * 1024,
             "backupCount": 0,
             "delay": False,
             "formatter": "myFormatter",

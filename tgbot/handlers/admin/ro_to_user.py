@@ -7,8 +7,9 @@ from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest
 
-from tgbot.filters.admin import AdminFilter
+
 from tgbot.utils.chat_t import chat_types
+from tgbot.utils.decorators import admin_and_bot_check
 from tgbot.utils.log_config import logger
 from tgbot.utils.timedelta import parse_timedelta_from_message
 
@@ -23,13 +24,6 @@ async def ro(message: Message) -> None:
     Command can be used for turning on mode read-only for users, you can write duration of this restriction.
     You should write this command in response to a message from the user you want to block.
     """
-
-    is_bot: bool = message.reply_to_message.from_user.is_bot
-    is_admin: bool = await AdminFilter.check(message.reply_to_message)
-    if is_admin or is_bot:
-        await message.reply_to_message.answer(text=f'{message.from_user.get_mention()}, '
-                                                   f'вы не можете ограничить бота, владельца или администратора чата!')
-        return
 
     duration: timedelta = await parse_timedelta_from_message(message)
     if not duration:
@@ -54,7 +48,7 @@ async def ro(message: Message) -> None:
 
 
 def register_ro(dp: Dispatcher) -> None:
-    dp.register_message_handler(ro,
+    dp.register_message_handler(admin_and_bot_check(ro),
                                 F.ilter(F.reply_to_message),
                                 chat_type=chat_types(),
                                 commands=["ro"],

@@ -25,12 +25,11 @@ class HasteBinClient:
         :param content: закодированный текст
         :return: словарь, где по ключу "key" лежит сформированная уникальная часть URL-адреса для документа
         """
-        session = ClientSession()
-        response = await session.post(url=self.format_url("/documents"), data=content)
-        response.raise_for_status()
-        result = await response.json()
-        await session.close()
-        return result
+        async with ClientSession() as session:
+            async with session.post(url=self.format_url("/documents"), data=content) as response:
+                response.raise_for_status()
+                result = await response.json()
+                return result
 
 
 def get_hastebin_client(url: str) -> HasteBinClient:
