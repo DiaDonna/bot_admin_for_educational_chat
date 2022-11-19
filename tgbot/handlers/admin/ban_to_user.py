@@ -3,10 +3,11 @@ from magic_filter import F
 
 from aiogram import Dispatcher
 from aiogram.types import Message
-from aiogram.utils.exceptions import BadRequest, CantRestrictChatOwner, UserIsAnAdministratorOfTheChat, CantRestrictSelf
+from aiogram.utils.exceptions import BadRequest
 
 from tgbot.utils.chat_t import chat_types
 from tgbot.filters.admin import AdminFilter
+from tgbot.utils.decorators import admin_and_bot_check
 from tgbot.utils.log_config import logger
 
 
@@ -22,14 +23,6 @@ async def ban(message: Message) -> None:
     """
 
     reason_for_ban: str = " ".join(message.text.split()[1:])
-
-    is_bot: bool = message.reply_to_message.from_user.is_bot
-    is_admin: bool = await AdminFilter.check(message.reply_to_message)
-
-    if is_admin or is_bot:
-        await message.reply_to_message.answer(text=f'{message.from_user.get_mention()}, '
-                                                   f'вы не можете забанить бота, владельца или администратора чата!')
-        return
 
     try:
         await message.bot.ban_chat_member(chat_id=message.chat.id, user_id=message.reply_to_message.from_user.id)
@@ -47,7 +40,7 @@ async def ban(message: Message) -> None:
 
 
 def register_bun(dp: Dispatcher) -> None:
-    dp.register_message_handler(ban,
+    dp.register_message_handler(admin_and_bot_check(ban),
                                 F.ilter(F.reply_to_message),
                                 chat_type=chat_types(),
                                 commands=["b", "ban"],

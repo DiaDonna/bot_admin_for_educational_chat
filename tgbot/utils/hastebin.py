@@ -25,6 +25,7 @@ class HasteBinClient:
         :param content: закодированный текст
         :return: словарь, где по ключу "key" лежит сформированная уникальная часть URL-адреса для документа
         """
+
         session = ClientSession()
         response = await session.post(url=self.format_url("/documents"), data=content)
         response.raise_for_status()
