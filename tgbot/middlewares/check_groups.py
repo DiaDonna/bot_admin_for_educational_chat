@@ -1,4 +1,4 @@
-from aiogram import types, Dispatcher
+from aiogram import types
 from aiogram.dispatcher.handler import current_handler, CancelHandler
 from aiogram.dispatcher.middlewares import BaseMiddleware
 from aiogram.types import ChatType

@@ -1,4 +1,3 @@
-import logging
 from magic_filter import F
 
 from aiogram import Dispatcher
@@ -6,7 +5,6 @@ from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest
 
 from tgbot.utils.chat_t import chat_types
-from tgbot.filters.admin import AdminFilter
 from tgbot.utils.decorators import admin_and_bot_check
 from tgbot.utils.log_config import logger
 
