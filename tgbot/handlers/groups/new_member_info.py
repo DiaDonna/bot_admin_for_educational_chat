@@ -18,7 +18,7 @@ async def new_member_info(message: Message) -> None:
                      f'<a href="https://magnetic-evergreen-187.notion.site/Python-Basic'
                      f'-3ac614e60b7e434e9d9c018023319c04"> ТУТ </a> '
                      f'\n\nА также ознакомься со всеми <b>закрепленными сообщениями</b> в этом чате.\n\n'
-                     f'Если понадобиться моя помощь - напиши мне в ЛС @{bot_user.username} команду <i>!help</i>')
+                     f'Если понадобится моя помощь - напиши мне в ЛС @{bot_user.username} команду <i>!help</i>')
 
     await message.answer(text=greeting, disable_web_page_preview=True)
     logger.info("New User {user} was greeting".format(
