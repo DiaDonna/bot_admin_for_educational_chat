@@ -8,7 +8,7 @@ from aiogram.utils.exceptions import Unauthorized
 from aiogram.utils.markdown import hlink
 
 from tgbot.config import Config
-from tgbot.utils.admin_ids import get_admins_ids
+from tgbot.utils.admin_ids import get_admins_ids_for_report
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.log_config import logger
 
@@ -45,7 +45,7 @@ async def text_report_admins(message: types.Message, config: Config):
         chat=chat_label,
     )
 
-    admin_ids: list[int] = await get_admins_ids(message=message, config=config)
+    admin_ids: list[int] = await get_admins_ids_for_report(message=message, config=config)
 
     if admin_ids:
         for admin_id in admin_ids:
