@@ -1,17 +1,17 @@
+import asyncio
 from contextlib import suppress
 
 from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation, TelegramAPIError
 
-from tgbot.config import Config
-from tgbot.utils.admin_ids import get_admins_ids
+from tgbot.utils.admin_ids import get_admins_ids_for_help
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.help_text import choice_for_helping_text
 from tgbot.utils.log_config import logger
 
 
-async def help_command(message: Message, config: Config) -> None:
+async def help_command(message: Message) -> None:
     """
         Хендлер для команды !help
 
@@ -26,9 +26,10 @@ async def help_command(message: Message, config: Config) -> None:
         Command can be writen in Private chat or in Group
         """
 
-    admins_ids: list[int] = await get_admins_ids(message=message, config=config)
+    admins_ids: list[int] = await get_admins_ids_for_help(message=message)
     helping_text: str = await choice_for_helping_text(message, admins_ids)
     bot_user = await message.bot.get_me()
+    messages_to_delete_in_15_sec: list[Message] = []
 
     try:
         await message.bot.send_message(chat_id=message.from_user.id,
@@ -38,30 +39,39 @@ async def help_command(message: Message, config: Config) -> None:
             user=message.from_user.id)
         )
 
-        with suppress(TelegramAPIError):
-            await message.delete()
-
     except BotBlocked as e:
         logger.error("Failed to send help-message to User {user}: {error!r}".format(
             user=message.from_user.id,
             error=e)
         )
-        await message.reply(f'Я не могу написать вам, т.к. вы приостановили диалог со мной.\n'
-                            f'Возобновите диалог и попробуйте снова:\n'
-                            f'@{bot_user.username}')
+        delete_this_msg = await message.reply(
+            f'Я не могу написать вам, т.к. вы приостановили диалог со мной.\n'
+            f'Возобновите диалог и попробуйте снова:\n'
+            f'@{bot_user.username}')
+        messages_to_delete_in_15_sec.append(delete_this_msg)
 
     except CantInitiateConversation as e:
         logger.error("Failed to send help-message to User {user}: {error!r}".format(
             user=message.from_user.id,
             error=e)
         )
-        await message.reply(f'Я не могу написать вам, т.к. вы не инициализировали диалог со мной.\n'
-                            f'Отправьте команду <i>/start</i> мне в ЛС:\n'
-                            f'@{bot_user.username}')
+        delete_this_msg = await message.reply(
+            f'Я не могу написать вам, т.к. вы не инициализировали диалог со мной.\n'
+            f'Отправьте команду <i>/start</i> мне в ЛС:\n'
+            f'@{bot_user.username}')
+        messages_to_delete_in_15_sec.append(delete_this_msg)
+
+    finally:
+        with suppress(TelegramAPIError):
+            await message.delete()
+        if messages_to_delete_in_15_sec:
+            await asyncio.sleep(15)
+            for msg_to_delete in messages_to_delete_in_15_sec:
+                with suppress(TelegramAPIError):
+                    await msg_to_delete.delete()
 
 
 def register_help_command(dp: Dispatcher):
-
     dp.register_message_handler(help_command,
                                 chat_type=chat_types(),
                                 commands=['help'],

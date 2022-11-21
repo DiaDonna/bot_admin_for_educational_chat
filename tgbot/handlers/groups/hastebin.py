@@ -38,17 +38,18 @@ async def command_paste(message: types.Message, config: Config) -> None:
 
     else:
         messages_to_delete.append(message.reply_to_message)
+        messages_to_delete.append(message)
         encoding_content: bytes = content.encode()
         response: dict = await get_hastebin_client(config.misc.hastebin_url).create_document(encoding_content)
         document_url: str = get_hastebin_client(config.misc.hastebin_url).format_url(response["key"])
         text: str = ("Сообщение опубликованное {author} было перемещено в {url}\n"
-                     "Размер: {size} байт".format(author=message.from_user.get_mention(as_html=True),
+                     "Размер: {size} байт".format(author=message.reply_to_message.from_user.get_mention(as_html=True),
                                                   url=md.hlink("HasteBin", document_url),
                                                   size=len(encoding_content),
                                                   )
                      )
 
-        await message.reply(text, allow_sending_without_reply=True)
+        await message.answer(text, allow_sending_without_reply=True)
 
     for i_message in messages_to_delete:
         with suppress(TelegramAPIError):
@@ -60,4 +61,5 @@ def register_paste_command(dp: Dispatcher):
                                 F.ilter(F.reply_to_message),
                                 chat_type=chat_types(),
                                 commands=['paste'],
+                                commands_prefix='!/',
                                 state='*')

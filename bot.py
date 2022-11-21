@@ -8,7 +8,7 @@ from aiogram.types import AllowedUpdates
 
 from tgbot.config import load_config
 from tgbot.filters.admin import AdminFilter
-from tgbot.handlers.echo_for_private import register_echo
+from tgbot.handlers.for_private.for_private import register_echo
 from tgbot.handlers.admin.admin import register_admin
 from tgbot.handlers.admin.ban_to_user import register_bun
 from tgbot.handlers.admin.ro_to_user import register_ro
