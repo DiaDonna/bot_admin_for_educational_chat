@@ -1,7 +1,7 @@
 from contextlib import suppress
 
 from aiogram import Dispatcher
-from aiogram.types import Message, ChatType
+from aiogram.types import Message
 from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation, TelegramAPIError
 
 from tgbot.config import Config
@@ -63,7 +63,7 @@ async def help_command(message: Message, config: Config) -> None:
 def register_help_command(dp: Dispatcher):
 
     dp.register_message_handler(help_command,
-                                chat_type=chat_types() + [ChatType.PRIVATE],
+                                chat_type=chat_types(),
                                 commands=['help'],
                                 commands_prefix='!/',
                                 state='*')
