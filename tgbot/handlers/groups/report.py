@@ -47,12 +47,11 @@ async def text_report_admins(message: types.Message, config: Config):
 
     admin_ids: list[int] = await get_admins_ids_for_report(message=message, config=config)
 
-    if admin_ids:
-        for admin_id in admin_ids:
-            with suppress(Unauthorized):
-                await message.bot.send_message(admin_id, text)
-                logger.info("Send alert message to admin {admin}".format(admin=admin_id))
-                await asyncio.sleep(0.3)
+    for admin_id in admin_ids:
+        with suppress(Unauthorized):
+            await message.bot.send_message(admin_id, text)
+            logger.info("Send alert message to admin {admin}".format(admin=admin_id))
+            await asyncio.sleep(0.3)
 
     await message.reply_to_message.reply("Сообщение было отправлено администраторам")
 

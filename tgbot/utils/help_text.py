@@ -17,22 +17,9 @@ async def choice_for_helping_text(message: Message, admins: List[int]) -> str:
     in_admins: bool = message.from_user.id in admins
 
     if in_admins:
-        help_text = get_admin_text(message)
+        help_text: str = admin_help_text(message=message)
 
     else:
-        help_text = get_user_text(message)
+        help_text: str = user_help_text(message=message)
 
     return help_text
-
-
-def get_admin_text(message: Message) -> str:
-
-    helping_text: str = admin_help_text(message=message)
-    return helping_text
-
-
-def get_user_text(message: Message) -> str:
-
-    helping_text: str = user_help_text(message=message)
-    return helping_text
-

@@ -2,7 +2,7 @@ from aiogram.types import Message, User
 
 
 def user_commands_guide() -> str:
-    text = (f'<b>Команды, которые доступны в группе:</b>\n\n'
+    return (f'<b>Команды, которые доступны в группе:</b>\n\n'
 
             f'1. <b>!help</b> или <b>/help</b> - отправляет в диалог с ботом (т.е. в этот чат) основную информацию '
             f'для написания дипломного проекта.\n\n'
@@ -20,11 +20,10 @@ def user_commands_guide() -> str:
             f'ссылку, по которой будет лежать код в привычном вам виде.\n'
             f'<b>Данная команда должна вводится в <u>ответе</u> на то сообщение, '
             f'которое вы хотите поместить на hastebin-сервер.</b>\n\n')
-    return text
 
 
 def user_help_text(message: Message) -> str:
-    text = (f'Привет, {message.from_user.get_mention()}!'
+    return (f'Привет, {message.from_user.get_mention()}!'
 
             f'\n\nСсылка на <b>базовые советы по дипломному проекту:</b>'
             f'<a href="https://magnetic-evergreen-187.notion.site/Python-Basic-3ac614e60b7e434e9d9c018023319c04">'
@@ -38,11 +37,10 @@ def user_help_text(message: Message) -> str:
             f'Вы можете посмотреть записи прошедших презентаций по'
             f'<a href="https://docs.google.com/spreadsheets/d/1KbM7aPC4iYcNqm89nUNlQkplxQdfFGYdT2whYgF4V38/edit#gid=0">'
             f' ссылке </a>')
-    return text
 
 
 def admin_help_text(message: Message) -> str:
-    text = (f'Привет, администратор {message.from_user.get_mention()}!'
+    return (f'Привет, администратор {message.from_user.get_mention()}!'
 
             f'\n\n<b>Список доступных команд:</b>'
             f'\n<i>Обе команды необходимо вводить в ответ на пересылаемое сообщение от пользователя, '
@@ -59,11 +57,9 @@ def admin_help_text(message: Message) -> str:
             f'\n<i>В случае, если команда передана без аргументов, то режим "только чтение" будет установлен '
             f'по умолчанию на 15 минут.</i>')
 
-    return text
-
 
 def greeting_text(message: Message, bot_user: User) -> str:
-    text = (f'Привет, {message.new_chat_members[0].get_mention()}!\n\n'
+    return (f'Привет, {message.new_chat_members[0].get_mention()}!\n\n'
             
             f'Прежде чем задавать вопросы - прочитай <b>базовые советы по дипломному проекту:</b> '
             f'<a href="https://magnetic-evergreen-187.notion.site/Python-Basic'
@@ -74,4 +70,3 @@ def greeting_text(message: Message, bot_user: User) -> str:
             f'Чтобы получить доступ к командам в этой группе - '
             f'напиши мне в ЛС @{bot_user.username} команду <i>/start</i>')
 
-    return text
