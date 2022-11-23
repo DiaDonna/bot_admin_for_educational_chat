@@ -8,10 +8,12 @@ from aiogram.types import AllowedUpdates
 
 from tgbot.config import load_config
 from tgbot.filters.admin import AdminFilter
-from tgbot.handlers.for_private.for_private import register_echo
+
 from tgbot.handlers.admin.admin import register_admin
 from tgbot.handlers.admin.ban_to_user import register_bun
 from tgbot.handlers.admin.ro_to_user import register_ro
+from tgbot.handlers.for_incorrect_using_commands import register_incorrect_using_command
+from tgbot.handlers.for_private.for_private import register_echo
 from tgbot.handlers.groups.hastebin import register_paste_command
 from tgbot.handlers.groups.report import register_report_command
 from tgbot.handlers.groups.user import register_user
@@ -33,6 +35,8 @@ def register_all_filters(dp):
 
 
 def register_all_handlers(dp):
+    register_incorrect_using_command(dp)
+
     register_admin(dp)
     register_bun(dp)
     register_ro(dp)

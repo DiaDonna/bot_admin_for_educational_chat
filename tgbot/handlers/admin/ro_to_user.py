@@ -1,6 +1,5 @@
 from babel.dates import format_timedelta
 from datetime import timedelta
-from magic_filter import F
 
 from aiogram import Dispatcher
 from aiogram.types import Message
@@ -48,7 +47,7 @@ async def ro(message: Message) -> None:
 
 def register_ro(dp: Dispatcher) -> None:
     dp.register_message_handler(admin_and_bot_check(ro),
-                                F.ilter(F.reply_to_message),
+                                is_reply=True,
                                 chat_type=chat_types(),
                                 commands=["ro"],
                                 commands_prefix='!',

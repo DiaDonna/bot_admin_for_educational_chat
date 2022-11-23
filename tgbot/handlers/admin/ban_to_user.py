@@ -1,5 +1,3 @@
-from magic_filter import F
-
 from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest
@@ -39,7 +37,7 @@ async def ban(message: Message) -> None:
 
 def register_bun(dp: Dispatcher) -> None:
     dp.register_message_handler(admin_and_bot_check(ban),
-                                F.ilter(F.reply_to_message),
+                                is_reply=True,
                                 chat_type=chat_types(),
                                 commands=["b", "ban"],
                                 commands_prefix='!',

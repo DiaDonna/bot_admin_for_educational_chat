@@ -1,5 +1,4 @@
 from contextlib import suppress
-from magic_filter import F
 
 from aiogram import md, types, Dispatcher
 from aiogram.utils.exceptions import TelegramAPIError
@@ -58,7 +57,7 @@ async def command_paste(message: types.Message, config: Config) -> None:
 
 def register_paste_command(dp: Dispatcher):
     dp.register_message_handler(command_paste,
-                                F.ilter(F.reply_to_message),
+                                is_reply=True,
                                 chat_type=chat_types(),
                                 commands=['paste'],
                                 commands_prefix='!/',
