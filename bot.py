@@ -35,14 +35,14 @@ def register_all_filters(dp):
 
 
 def register_all_handlers(dp):
+    register_admin(dp)
+    register_user(dp)
+    register_echo(dp)
     register_incorrect_using_command(dp)
 
-    register_admin(dp)
     register_bun(dp)
     register_ro(dp)
 
-    register_user(dp)
-    register_echo(dp)
     register_help_command(dp)
     register_new_member_info(dp)
     register_paste_command(dp)
