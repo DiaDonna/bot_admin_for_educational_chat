@@ -1,5 +1,4 @@
 aiogram~=2.23.1
 environs~=9.5
 Babel~=2.9.1
-magic-filter~=1.0.9
 aiohttp~=3.8.3

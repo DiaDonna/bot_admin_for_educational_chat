@@ -1,9 +1,7 @@
 import asyncio
 from contextlib import suppress
 
-from magic_filter import F
-
-from aiogram import types, Dispatcher, Bot
+from aiogram import types, Dispatcher
 from aiogram.utils.exceptions import Unauthorized
 from aiogram.utils.markdown import hlink
 
@@ -58,7 +56,7 @@ async def text_report_admins(message: types.Message, config: Config):
 
 def register_report_command(dp: Dispatcher):
     dp.register_message_handler(text_report_admins,
-                                F.ilter(F.reply_to_message),
+                                is_reply=True,
                                 chat_type=chat_types(),
                                 commands=['report'],
                                 commands_prefix='!/',
