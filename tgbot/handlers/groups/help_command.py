@@ -5,7 +5,7 @@ from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation, TelegramAPIError
 
-from tgbot.utils.admin_ids import get_admins_ids_for_help
+from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.help_text import choice_for_helping_text
 from tgbot.utils.log_config import logger
@@ -26,7 +26,7 @@ async def help_command(message: Message) -> None:
         Command can be writen in Private chat or in Group
         """
 
-    admins_ids: list[int] = await get_admins_ids_for_help(message=message)
+    admins_ids: list[int] = await get_admins_ids_for_help_and_paste(message=message)
     helping_text: str = await choice_for_helping_text(message, admins_ids)
     bot_user = await message.bot.get_me()
     messages_to_delete_in_15_sec: list[Message] = []
