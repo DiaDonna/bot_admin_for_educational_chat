@@ -1,9 +1,11 @@
+import asyncio
 from contextlib import suppress
 
 from aiogram import md, types, Dispatcher
 from aiogram.utils.exceptions import TelegramAPIError
 
 from tgbot.config import Config
+from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.hastebin import get_hastebin_client
 
@@ -19,6 +21,19 @@ async def command_paste(message: types.Message, config: Config) -> None:
     :param message: объект сообщения от пользователя;
     :param config: параметр из одноименного класса Config
     """
+
+    by_admin: bool = message.from_user.id in await get_admins_ids_for_help_and_paste(message=message)
+    by_message_owner: bool = message.from_user.id is message.reply_to_message.from_user.id
+
+    if not by_admin or by_message_owner:
+        msg_to_delete_in_30sec = await message.reply(
+            'Только владелец сообщения или администраторы могут отправить сообщение на hastebin-сервер')
+        await asyncio.sleep(30)
+        with suppress(TelegramAPIError):
+            await msg_to_delete_in_30sec.delete()
+            await message.delete()
+
+        return
 
     content: str = message.reply_to_message.text or message.reply_to_message.caption
     messages_to_delete: list[types.Message] = []

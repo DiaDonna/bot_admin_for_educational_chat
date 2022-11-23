@@ -9,7 +9,7 @@ async def get_admins_ids_for_report(message: Message, config: Config) -> list[in
     зависит от параметра send_report_to_owner
     """
     send_report_to_owner: bool = config.tg_bot.send_report_to_owner
-    admins: list[int] = await get_admins_ids_for_help(message)
+    admins: list[int] = await get_admins_ids_for_help_and_paste(message)
     owner: int = await _get_owner_id(message)
     if not send_report_to_owner:
         admins.remove(owner)
@@ -17,7 +17,7 @@ async def get_admins_ids_for_report(message: Message, config: Config) -> list[in
     return admins
 
 
-async def get_admins_ids_for_help(message: Message) -> list[int]:
+async def get_admins_ids_for_help_and_paste(message: Message) -> list[int]:
     """
     Возвращает id админов группы, включая владельца группы
     """
