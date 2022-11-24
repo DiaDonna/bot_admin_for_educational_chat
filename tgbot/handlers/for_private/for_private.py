@@ -2,26 +2,26 @@ from aiogram import Dispatcher
 from aiogram.types import ChatType, Message
 
 from tgbot.keyboards.reply.for_private import main_keyboard
+from tgbot.utils.decorators import logging_message
 from tgbot.utils.texts import user_commands_guide, user_help_text
-from tgbot.utils.update_log import add_to_log_message
 
 
+@logging_message
 async def echo_for_private(message: Message):
     """
     Эхо-хендлер на команды для ЛС с ботом. На команды высылает инфо-сообщение о недоступности использования команд в ЛС.
     """
-    await add_to_log_message(message=message)
     await message.reply('Все мои команды доступны только для групп. '
                         '\n\nЧтобы получить дополнительную информацию, нажмите на нужную кнопку ниже.',
                         reply_markup=main_keyboard())
 
 
+@logging_message
 async def send_info(message: Message) -> None:
     """
     Хендлер на сообщения для ЛС с ботом. На выбор с reply-клавиатуры выдает соответсвующую информацию,
     на остальные сообщения просит нажать на одну из кнопок в меню reply-клавиатуры
     """
-    await add_to_log_message(message=message)
     text = ''
     if message.text == 'Команды для чата: инструкция':
         text: str = user_commands_guide()

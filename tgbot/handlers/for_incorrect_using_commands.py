@@ -5,11 +5,10 @@ from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import TelegramAPIError
 
-from tgbot.utils.update_log import add_to_log_message
+from tgbot.utils.decorators import logging_message
 
-
+@logging_message
 async def answer_for_incorrect_using_commands(message: Message):
-    await add_to_log_message(message=message)
     msg_to_delete_in_15sec = await message.reply('Эта команда должна вводиться в ответ на сообщение!')
 
     with suppress(TelegramAPIError):

@@ -3,11 +3,10 @@ from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest
 
 from tgbot.utils.chat_t import chat_types
-from tgbot.utils.decorators import admin_and_bot_check
+from tgbot.utils.decorators import admin_and_bot_check, logging_message
 from tgbot.utils.log_config import logger
-from tgbot.utils.update_log import add_to_log_message
 
-
+@logging_message
 async def ban(message: Message) -> None:
     """
     Хендлер для команды !b или !ban для роли ADMIN.
@@ -18,7 +17,6 @@ async def ban(message: Message) -> None:
     Command can be used for ban users with description of the reasons.
     You should write this command in response to a message from the user you want to ban.
     """
-    await add_to_log_message(message=message)
     reason_for_ban: str = " ".join(message.text.split()[1:])
 
     try:

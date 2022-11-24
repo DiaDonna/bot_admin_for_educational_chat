@@ -5,14 +5,13 @@ from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest
 
-
 from tgbot.utils.chat_t import chat_types
-from tgbot.utils.decorators import admin_and_bot_check
+from tgbot.utils.decorators import admin_and_bot_check, logging_message
 from tgbot.utils.log_config import logger
 from tgbot.utils.timedelta import parse_timedelta_from_message
-from tgbot.utils.update_log import add_to_log_message
 
 
+@logging_message
 async def ro(message: Message) -> None:
     """
     Хендлер для команды !ro для роли ADMIN
@@ -24,7 +23,6 @@ async def ro(message: Message) -> None:
     You should write this command in response to a message from the user you want to block.
     """
 
-    await add_to_log_message(message=message)
     duration: timedelta = await parse_timedelta_from_message(message)
     if not duration:
         return
