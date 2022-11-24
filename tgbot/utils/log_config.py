@@ -1,27 +1,9 @@
 import logging.config
 
 
-class LevelDebug(logging.Filter):
-    def filter(self, record):
-        return record.levelno >= 30
-
-
-class LevelInfo(logging.Filter):
-    def filter(self, record):
-        return record.levelno <= 20
-
-
 dictLogConfig = {
     "version": 1,
     "disable_existing_loggers": False,
-    'filters': {
-        "debug": {
-            "()": LevelDebug,
-        },
-        "info": {
-            "()": LevelInfo,
-        },
-    },
     "handlers": {
         "fileDebug": {
             "class": "logging.handlers.RotatingFileHandler",
@@ -30,28 +12,35 @@ dictLogConfig = {
             "backupCount": 0,
             "delay": False,
             "formatter": "myFormatter",
-            "filters": ["debug"],
+            "level": "DEBUG",
             "filename": "logs/debug.log",
             "encoding": "utf-8"
         },
-        "fileInfo": {
+        "fileWarning": {
             "class": "logging.handlers.RotatingFileHandler",
             "mode": "a",
             "maxBytes": 5 * 1024 * 1024,
             "backupCount": 0,
             "delay": False,
             "formatter": "myFormatter",
-            "filters": ["info"],
-            "filename": "logs/info.log",
+            "level": "WARNING",
+            "filename": "logs/error.log",
             "encoding": "utf-8"
+        },
+        "stream": {
+            "class": "logging.StreamHandler",
+            "level": "INFO",
+            "formatter": "myFormatter",
+            "stream": "ext://sys.stdout",
         },
 
     },
     "loggers": {
-        'file_log': {
+        'root': {
             "handlers": [
                 "fileDebug",
-                "fileInfo",
+                "fileWarning",
+                "stream",
             ],
             "level": "DEBUG",
         },
@@ -60,9 +49,10 @@ dictLogConfig = {
         "myFormatter": {
             "format": "%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s",
             "datefmt": '%d-%m-%Y %H:%M:%S'
-        }
+        },
     }
 }
 
-logger = logging.getLogger('file_log')
+
+logger = logging.getLogger('root')
 logging.config.dictConfig(dictLogConfig)

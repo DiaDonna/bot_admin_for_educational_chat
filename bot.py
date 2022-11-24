@@ -1,9 +1,7 @@
 import asyncio
-import logging
 
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.contrib.middlewares.logging import LoggingMiddleware
 from aiogram.types import AllowedUpdates
 
 from tgbot.config import load_config
@@ -25,7 +23,6 @@ from tgbot.utils.log_config import logger
 
 
 def register_all_middlewares(dp, config):
-    dp.setup_middleware(LoggingMiddleware())
     dp.setup_middleware(EnvironmentMiddleware(config=config))
     dp.setup_middleware(VerifiedGroupsMiddleware())
 
@@ -50,10 +47,6 @@ def register_all_handlers(dp):
 
 
 async def main():
-    logging.basicConfig(
-        level=logging.INFO,
-        format=u'%(filename)s:%(lineno)d #%(levelname)-8s [%(asctime)s] - %(name)s - %(message)s',
-    )
     logger.info("Starting bot")
     config = load_config(".env")
 
