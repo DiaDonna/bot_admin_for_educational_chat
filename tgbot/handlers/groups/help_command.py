@@ -7,10 +7,12 @@ from aiogram.utils.exceptions import BotBlocked, CantInitiateConversation, Teleg
 
 from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
 from tgbot.utils.chat_t import chat_types
+from tgbot.utils.decorators import logging_message
 from tgbot.utils.help_text import choice_for_helping_text
 from tgbot.utils.log_config import logger
 
 
+@logging_message
 async def help_command(message: Message) -> None:
     """
         Хендлер для команды !help

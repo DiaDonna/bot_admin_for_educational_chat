@@ -8,9 +8,11 @@ from aiogram.utils.markdown import hlink
 from tgbot.config import Config
 from tgbot.utils.admin_ids import get_admins_ids_for_report
 from tgbot.utils.chat_t import chat_types
+from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
 
 
+@logging_message
 async def text_report_admins(message: types.Message, config: Config):
     """
     Хендлер для команды !report или /report.

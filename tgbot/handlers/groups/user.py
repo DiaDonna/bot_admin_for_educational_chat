@@ -2,8 +2,10 @@ from aiogram import Dispatcher
 from aiogram.types import Message, ChatType, ReplyKeyboardRemove
 
 from tgbot.keyboards.reply.for_private import main_keyboard
+from tgbot.utils.decorators import logging_message
 
 
+@logging_message
 async def user_start(message: Message) -> None:
     """ Хендлер для команды start (префикс команды '/' или '!') """
 
@@ -16,4 +18,3 @@ async def user_start(message: Message) -> None:
 
 def register_user(dp: Dispatcher):
     dp.register_message_handler(user_start, commands=["start"], commands_prefix='/!', state="*", )
-

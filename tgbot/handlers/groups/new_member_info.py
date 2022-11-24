@@ -1,10 +1,12 @@
 from aiogram import Dispatcher, types
 from aiogram.types import Message
 
+from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
 from tgbot.utils.texts import greeting_text
 
 
+@logging_message
 async def new_member_info(message: Message) -> None:
     """
     Хендлер для приветствия нового пользователя группы с полезными ссылками.

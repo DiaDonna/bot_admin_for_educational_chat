@@ -1,10 +1,12 @@
 from aiogram import Dispatcher
 from aiogram.types import Message
 
+from tgbot.utils.decorators import logging_message
 
+
+@logging_message
 async def admin_start(message: Message) -> None:
     """ Хендлер для команды start для роли ADMIN (префикс команды '/' или '!') """
-
     await message.answer('Привет, админ!')
 
 
