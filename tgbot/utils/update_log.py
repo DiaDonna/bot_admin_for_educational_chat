@@ -14,7 +14,8 @@ async def add_to_log_message(message: Message) -> None:
                     f'\nmsg: [ID:{message.message_id};text: {message.text}]'
     if message.reply_to_message:
         reply_user_info = await get_user_info(message.reply_to_message.from_user)
-        log_text += f'\nreply to msg: [ID:{message.reply_to_message.message_id};text: {message.reply_to_message.text}] ' \
+        log_text += f'\nreply to msg: [ID:{message.reply_to_message.message_id};' \
+                    f'text: {message.reply_to_message.text}] ' \
                     f'\nfrom user [{reply_user_info}]'
     logger.info(log_text)
 
