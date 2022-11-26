@@ -1,19 +1,16 @@
-import asyncio
-from contextlib import suppress
-
-from aiogram import types, Dispatcher
-from aiogram.utils.exceptions import Unauthorized
+from aiogram import Dispatcher
+from aiogram.types import Message
 from aiogram.utils.markdown import hlink
 
 from tgbot.config import Config
-from tgbot.utils.admin_ids import get_admins_ids_for_report
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
+from tgbot.utils.send_alert_to_admins import send_alert_to_admins
 
 
 @logging_message
-async def text_report_admins(message: types.Message, config: Config):
+async def report_command(message: Message, config: Config):
     """
     Хендлер для команды !report или /report.
     Позволяет пользователям пожаловаться на сообщение в чате.
@@ -39,25 +36,17 @@ async def text_report_admins(message: types.Message, config: Config):
         url_to_alert: str = '/'.join([url_to_alert, f'{message.reply_to_message.message_id}'])
 
     chat_label: str = hlink(message.chat.title, url_to_alert)
-
     text = "[ALERT] Пользователь {user} пожаловался на сообщение в чате {chat}.".format(
         user=message.from_user.get_mention(),
         chat=chat_label,
     )
 
-    admin_ids: list[int] = await get_admins_ids_for_report(message=message, config=config)
-
-    for admin_id in admin_ids:
-        with suppress(Unauthorized):
-            await message.bot.send_message(admin_id, text)
-            logger.info("Send alert message to admin {admin}".format(admin=admin_id))
-            await asyncio.sleep(0.3)
-
+    await send_alert_to_admins(message=message, text=text, config=config)
     await message.reply_to_message.reply("Сообщение было отправлено администраторам")
 
 
 def register_report_command(dp: Dispatcher):
-    dp.register_message_handler(text_report_admins,
+    dp.register_message_handler(report_command,
                                 is_reply=True,
                                 chat_type=chat_types(),
                                 commands=['report'],

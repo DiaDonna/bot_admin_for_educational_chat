@@ -1,13 +1,17 @@
 from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest
+from aiogram.utils.markdown import hlink
 
+from tgbot.config import Config
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.decorators import admin_and_bot_check, logging_message
 from tgbot.utils.log_config import logger
+from tgbot.utils.send_alert_to_admins import send_alert_to_admins
+
 
 @logging_message
-async def ban(message: Message) -> None:
+async def ban(message: Message, config: Config) -> None:
     """
     Хендлер для команды !b или !ban для роли ADMIN.
     Команда позволяет банить пользователя с описанием причины.
@@ -17,14 +21,28 @@ async def ban(message: Message) -> None:
     Command can be used for ban users with description of the reasons.
     You should write this command in response to a message from the user you want to ban.
     """
+
     reason_for_ban: str = " ".join(message.text.split()[1:])
+    admin_who_banned = message.from_user
+    user_was_banned = message.reply_to_message.from_user
 
     try:
         await message.bot.ban_chat_member(chat_id=message.chat.id, user_id=message.reply_to_message.from_user.id)
         logger.info("User {user} baned by {admin}".format(
-            user=message.reply_to_message.from_user.id,
-            admin=message.from_user.id)
+            user=user_was_banned.id,
+            admin=admin_who_banned.id)
         )
+
+        chat_label: str = hlink(message.chat.title, await message.chat.get_url())
+        text = "[ALERT] Администратор {admin} забанил пользователя {user} в чате {chat}. \nПричина: {reason}." \
+               "\nСообщение за которое забанили: \n{reason_message}".format(
+                admin=admin_who_banned.get_mention(),
+                user=user_was_banned.get_mention(),
+                chat=chat_label,
+                reason=reason_for_ban,
+                reason_message=message.reply_to_message.text)
+        await send_alert_to_admins(message=message, text=text, config=config)
+
         await message.reply_to_message.answer(text=f'Пользователь {message.reply_to_message.from_user.get_mention()} '
                                                    f'<b>забанен</b> по причине: {reason_for_ban}')
 
