@@ -10,9 +10,8 @@ from tgbot.utils.log_config import logger
 from tgbot.utils.send_alert_to_admins import send_alert_to_admins
 
 
-async def ban(message: Message, config: Config) -> None:
 @logging_message
-async def ban(message: Message) -> None:
+async def ban(message: Message, config: Config) -> None:
     """
     Хендлер для команды !b или !ban для роли ADMIN.
     Команда позволяет банить пользователя с описанием причины.

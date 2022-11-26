@@ -15,7 +15,6 @@ from tgbot.utils.timedelta import parse_timedelta_from_message
 
 
 @logging_message
-async def ro(message: Message) -> None:
 async def ro(message: Message, config: Config) -> None:
     """
     Хендлер для команды !ro для роли ADMIN

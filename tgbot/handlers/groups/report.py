@@ -10,7 +10,6 @@ from tgbot.utils.send_alert_to_admins import send_alert_to_admins
 
 
 @logging_message
-async def text_report_admins(message: types.Message, config: Config):
 async def report_command(message: Message, config: Config):
     """
     Хендлер для команды !report или /report.
