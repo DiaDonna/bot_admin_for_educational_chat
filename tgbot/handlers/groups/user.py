@@ -10,6 +10,7 @@ from tgbot.utils.decorators import logging_message
 from tgbot.utils.chat_t import chat_types
 
 
+@logging_message
 async def start_in_group(message: Message) -> None:
     """ Хендлер для команды start в группе (префикс команды '/' или '!') """
 

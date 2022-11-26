@@ -10,6 +10,7 @@ from tgbot.utils.chat_t import chat_types
 from tgbot.utils.decorators import logging_message
 from tgbot.utils.hastebin import get_hastebin_client
 
+
 @logging_message
 async def command_paste(message: types.Message, config: Config) -> None:
     """

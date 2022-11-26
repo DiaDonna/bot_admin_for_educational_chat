@@ -1,5 +1,5 @@
-from aiogram import Dispatcher, types
-from aiogram.types import Message
+from aiogram import Dispatcher
+from aiogram.types import Message, ContentTypes
 
 from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
@@ -25,4 +25,4 @@ async def new_member_info(message: Message) -> None:
 
 def register_new_member_info(dp: Dispatcher):
     dp.register_message_handler(new_member_info,
-                                content_types=types.ContentTypes.NEW_CHAT_MEMBERS)
+                                content_types=ContentTypes.NEW_CHAT_MEMBERS)
