@@ -8,12 +8,14 @@ from aiogram.utils.markdown import hlink
 
 from tgbot.config import Config
 from tgbot.utils.chat_t import chat_types
-from tgbot.utils.decorators import admin_and_bot_check
+from tgbot.utils.decorators import admin_and_bot_check, logging_message
 from tgbot.utils.log_config import logger
 from tgbot.utils.send_alert_to_admins import send_alert_to_admins
 from tgbot.utils.timedelta import parse_timedelta_from_message
 
 
+@logging_message
+async def ro(message: Message) -> None:
 async def ro(message: Message, config: Config) -> None:
     """
     Хендлер для команды !ro для роли ADMIN

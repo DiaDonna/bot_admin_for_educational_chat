@@ -5,12 +5,14 @@ from aiogram.utils.markdown import hlink
 
 from tgbot.config import Config
 from tgbot.utils.chat_t import chat_types
-from tgbot.utils.decorators import admin_and_bot_check
+from tgbot.utils.decorators import admin_and_bot_check, logging_message
 from tgbot.utils.log_config import logger
 from tgbot.utils.send_alert_to_admins import send_alert_to_admins
 
 
 async def ban(message: Message, config: Config) -> None:
+@logging_message
+async def ban(message: Message) -> None:
     """
     Хендлер для команды !b или !ban для роли ADMIN.
     Команда позволяет банить пользователя с описанием причины.

@@ -6,6 +6,7 @@ from aiogram.types import Message, ChatType, ReplyKeyboardRemove
 from aiogram.utils.exceptions import TelegramAPIError
 
 from tgbot.keyboards.reply.for_private import main_keyboard
+from tgbot.utils.decorators import logging_message
 from tgbot.utils.chat_t import chat_types
 
 
@@ -20,6 +21,7 @@ async def start_in_group(message: Message) -> None:
         await message.delete()
 
 
+@logging_message
 async def user_start(message: Message) -> None:
     """ Хендлер для команды start в ЛС (префикс команды '/' или '!') """
 

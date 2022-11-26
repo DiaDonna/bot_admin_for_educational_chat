@@ -7,9 +7,10 @@ from aiogram.utils.exceptions import TelegramAPIError
 from tgbot.config import Config
 from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
 from tgbot.utils.chat_t import chat_types
+from tgbot.utils.decorators import logging_message
 from tgbot.utils.hastebin import get_hastebin_client
 
-
+@logging_message
 async def command_paste(message: types.Message, config: Config) -> None:
     """
     Хендлер для комманды /paste.

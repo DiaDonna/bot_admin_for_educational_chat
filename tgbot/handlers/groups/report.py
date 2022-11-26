@@ -4,10 +4,13 @@ from aiogram.utils.markdown import hlink
 
 from tgbot.config import Config
 from tgbot.utils.chat_t import chat_types
+from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
 from tgbot.utils.send_alert_to_admins import send_alert_to_admins
 
 
+@logging_message
+async def text_report_admins(message: types.Message, config: Config):
 async def report_command(message: Message, config: Config):
     """
     Хендлер для команды !report или /report.
