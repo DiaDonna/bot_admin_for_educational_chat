@@ -4,15 +4,17 @@ from datetime import timedelta
 from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest
+from aiogram.utils.markdown import hlink
 
-
+from tgbot.config import Config
 from tgbot.utils.chat_t import chat_types
 from tgbot.utils.decorators import admin_and_bot_check
 from tgbot.utils.log_config import logger
+from tgbot.utils.send_alert_to_admins import send_alert_to_admins
 from tgbot.utils.timedelta import parse_timedelta_from_message
 
 
-async def ro(message: Message) -> None:
+async def ro(message: Message, config: Config) -> None:
     """
     Хендлер для команды !ro для роли ADMIN
 
@@ -27,13 +29,24 @@ async def ro(message: Message) -> None:
     if not duration:
         return
 
+    admin_who_restricted = message.from_user
+    user_was_restricted = message.reply_to_message.from_user
     try:
         await message.chat.restrict(message.reply_to_message.from_user.id, can_send_messages=False, until_date=duration)
         logger.info("User {user} restricted by {admin} for {duration}".format(
-            user=message.reply_to_message.from_user.id,
-            admin=message.from_user.id,
+            user=user_was_restricted.id,
+            admin=admin_who_restricted.id,
             duration=duration)
         )
+
+        chat_label: str = hlink(message.chat.title, await message.chat.get_url())
+        text = "[ALERT] Администратор {admin} включил режим RO пользователю {user} в чате {chat} на {duration}.".format(
+            admin=admin_who_restricted.get_mention(),
+            user=user_was_restricted.get_mention(),
+            chat=chat_label,
+            duration=duration)
+        await send_alert_to_admins(message=message, text=text, config=config)
+
         await message.reply_to_message.answer(
             "<b>Режим &#171;только чтениe&#187;</b> активирован для пользователя {user}."
             "\nПродолжительность: {duration}".format(
