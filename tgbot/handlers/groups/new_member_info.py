@@ -1,5 +1,5 @@
 from aiogram import Dispatcher
-from aiogram.types import Message, ContentTypes
+from aiogram.types import Message, ContentTypes, ReplyKeyboardRemove
 
 from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
@@ -17,7 +17,7 @@ async def new_member_info(message: Message) -> None:
     bot_user = await message.bot.get_me()
     greeting: str = greeting_text(message=message, bot_user=bot_user)
 
-    await message.answer(text=greeting, disable_web_page_preview=True)
+    await message.answer(text=greeting, disable_web_page_preview=True, reply_markup=ReplyKeyboardRemove())
     logger.info("New User {user} was greeting".format(
         user=message.new_chat_members[0].id)
     )
