@@ -9,4 +9,33 @@ services:
     - ./logs:/app/logs
     restart: always
     env_file:
-      - ".env"
+      - ./.env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    container_name: db_garden
+    image: postgres:15.0-alpine
+    command:
+      - "postgres"
+      - "-c"
+      - "log_destination=stderr"
+      - "-c"
+      - "logging_collector=on"
+      - "-c"
+      - "log_directory=/var/lib/postgresql/data/pg_log"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=512MB"
+    env_file:
+      - ./.env
+    volumes:
+      - ./postgres_db/postgres/postgresql-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
