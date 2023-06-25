@@ -1,4 +1,6 @@
-aiogram~=2.23.1
+aiogram==2.25.1
 environs~=9.5
-Babel~=2.9.1
+Babel==2.9.1
 aiohttp~=3.8.3
+Sqlalchemy==2.0.17
+asyncpg==0.27.0

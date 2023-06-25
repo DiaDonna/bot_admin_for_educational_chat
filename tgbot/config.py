@@ -14,11 +14,20 @@ class Miscellaneous:
     hastebin_url: str
     verified_groups: list[int]
 
+@dataclass
+class Database:
+    host: str
+    user: str
+    name: str
+    port: str
+    password: str
+
 
 @dataclass
 class Config:
     tg_bot: TgBot
     misc: Miscellaneous
+    db: Database
 
 
 def load_config(path: str = None):
@@ -33,5 +42,12 @@ def load_config(path: str = None):
         misc=Miscellaneous(
             hastebin_url=env.str("HASTEBIN_URL"),
             verified_groups=list(map(int, env.list("VERIFIED_GROUPS")))
+        ),
+        db=Database(
+            host=env.str("POSTGRES_HOST"),
+            user=env.str("POSTGRES_USER"),
+            name=env.str("POSTGRES_DB"),
+            port=env.str("POSTGRES_PORT"),
+            password=env.str("POSTGRES_PASSWORD"),
         )
     )
