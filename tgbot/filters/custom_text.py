@@ -25,6 +25,6 @@ class ThankMessageFilter(BoundFilter):
     async def check(self, obj: Union[types.Message, types.Sticker]):
         data = obj.text or obj.sticker.emoji
         if data:
-            if data.lower() not in self.custom_text:
-                return False
-        return True
+            if any(word in data.lower() for word in self.custom_text):
+                return True
+        return False
