@@ -17,6 +17,7 @@ from tgbot.handlers.admin.ro_to_user import register_ro
 from tgbot.handlers.for_incorrect_using_commands import register_incorrect_using_command
 from tgbot.handlers.for_private.for_private import register_echo
 from tgbot.handlers.groups.entry_captcha_callback import register_callback_captcha
+from tgbot.handlers.groups.throw_entry_captcha import register_captcha
 from tgbot.handlers.groups.hastebin import register_paste_command
 from tgbot.handlers.groups.report import register_report_command
 from tgbot.handlers.groups.reputation import register_thank_message, register_reputation_command
@@ -43,6 +44,7 @@ def register_all_handlers(dp):
     register_user(dp)
     register_echo(dp)
     register_incorrect_using_command(dp)
+    register_captcha(dp)
     register_callback_captcha(dp)
 
     register_bun(dp)
