@@ -19,5 +19,5 @@ async def captcha_answer(call: CallbackQuery) -> None:
         await call.answer(text="no you are block!", show_alert=True)
 
 
-def register_callback(dp: Dispatcher):
+def register_callback_captcha(dp: Dispatcher):
     dp.register_callback_query_handler(captcha_answer, lambda call: call.data.startswith("answer_button"))
