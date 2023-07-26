@@ -47,7 +47,7 @@ def user_help_text(message: Message) -> str:
 def admin_help_text(message: Message) -> str:
     return (
         f'Привет, администратор {message.from_user.get_mention()}!'
-
+        f'\n\n<b>Для начала ответьте на каптчу</b>'
         f'\n\n<b>Список доступных команд:</b>'
         f'\n<i>Обе команды необходимо вводить в ответ на пересылаемое сообщение от пользователя, '
         f'к которому хотите применить команду.\n'
