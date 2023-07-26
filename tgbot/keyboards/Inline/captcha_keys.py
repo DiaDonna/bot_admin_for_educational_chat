@@ -1,0 +1,38 @@
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+import random
+
+
+def gen_captcha_keys(temp: int) -> list:
+    """
+     Take answer, generate object buttons, return list of object: "KeyboardButton"
+    param temp: int answer of the captcha
+    return: list of "KeyboardButton" with answer
+    """
+    temp = str(temp)
+    first_button: InlineKeyboardButton = InlineKeyboardButton(
+        text=temp, callback_data=f"answer_button:{temp}")
+    next_button: InlineKeyboardButton = InlineKeyboardButton(
+        text='wrong_answer', callback_data="answer_button:joke")
+    next_last_button: InlineKeyboardButton = InlineKeyboardButton(
+        text='wrong_answer', callback_data="answer_button:joke")
+    last_button: InlineKeyboardButton = InlineKeyboardButton(
+        text='wrong_answer', callback_data="answer_button:joke")
+    out_list = [first_button, next_button, next_last_button, last_button]
+    random.shuffle(out_list)
+    return out_list
+
+
+def gen_captcha_button_builder(temp: int) -> InlineKeyboardMarkup:
+    """trow int, add buttons, return object:"ReplyKeyboardMarkup"
+       param temp: int answer of the captcha
+       return object:ReplyKeyboardMarkup"""
+    captcha_builder: InlineKeyboardMarkup = InlineKeyboardMarkup(row_width=1)
+    captcha_buttons: list = gen_captcha_keys(temp)
+    for i in range(len(captcha_buttons)):
+        captcha_builder.add(captcha_buttons[i])
+    keyboard_captcha: InlineKeyboardMarkup = captcha_builder
+    return keyboard_captcha
+
+
+if __name__ == '__main__':
+    pass
