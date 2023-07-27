@@ -23,12 +23,12 @@ async def captcha(message: Message) -> None:
                                                                   f' this {password} is answer',
                                      reply_markup=gen_captcha_button_builder(password)
                                      )
-    await asyncio.sleep(30)
+    await asyncio.sleep(300)
     await msg.delete()
 
 
 def register_captcha(dp: Dispatcher):
     dp.register_message_handler(captcha,
-                                commands=['test'],
+                                commands=['captcha'],
                                 commands_prefix='/!',
                                 state="*")
