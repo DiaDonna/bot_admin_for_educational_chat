@@ -22,6 +22,7 @@ async def captcha_answer(call: CallbackQuery) -> None:
         if int(password) == user_dict.get(user_id):
             await call.answer(text=f"{call.from_user.full_name}"
                                    f" you are pass!", show_alert=True)
+            await user_dict.pop(user_id)
         else:
             await call.answer(text="don't be jerk!\n"
                                    "sit in the corner 4 min", show_alert=True)

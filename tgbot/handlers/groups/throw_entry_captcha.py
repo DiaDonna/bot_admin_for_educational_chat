@@ -20,7 +20,7 @@ async def captcha(message: Message) -> None:
     password: int = random.randint(1000, 9999)
     user: str = message.from_user.id
     user_id: str = message.new_chat_members[0].id
-    user_name = message.from_user.full_name
+    user_name: str = message.from_user.full_name
     captcha_image: InputFile = InputFile(throw_captcha(password))
     user_dict.update({user: password})
 
