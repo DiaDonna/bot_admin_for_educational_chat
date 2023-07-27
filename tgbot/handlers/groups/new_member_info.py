@@ -5,10 +5,7 @@ from aiogram.types import Message, ContentTypes, ReplyKeyboardRemove
 from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
 from tgbot.utils.texts import greeting_text
-
-
-user_dict: dict = dict()
-
+from tgbot.handlers.groups.throw_entry_captcha import captcha
 
 @logging_message
 async def new_member_info(message: Message) -> None:
@@ -20,11 +17,11 @@ async def new_member_info(message: Message) -> None:
 
     bot_user = await message.bot.get_me()
     greeting: str = greeting_text(message=message, bot_user=bot_user)
+    user_id: str = message.new_chat_members[0].id
 
     await message.answer(text=greeting, disable_web_page_preview=True, reply_markup=ReplyKeyboardRemove())
-    logger.info("New User {user} was greeting".format(
-        user=message.new_chat_members[0].id)
-    )
+    logger.info(f"New User {user_id} was greeting")
+    await captcha(message)
 
 
 def register_new_member_info(dp: Dispatcher):

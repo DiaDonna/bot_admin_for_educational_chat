@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from environs import Env
 
+user_dict: dict = dict()
 
 @dataclass
 class TgBot:

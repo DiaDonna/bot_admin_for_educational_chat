@@ -3,10 +3,12 @@ import asyncio
 from aiogram import Dispatcher
 from aiogram.types import CallbackQuery, ChatPermissions
 from datetime import timedelta
+from tgbot.utils.log_config import logger
+from tgbot.utils.decorators import logging_message
+from tgbot.config import user_dict
 
-user_dict: dict = dict()
 
-
+@logging_message
 async def captcha_answer(call: CallbackQuery) -> None:
     """handler for inline captcha answer button
            param call: CallbackQuery
@@ -22,24 +24,27 @@ async def captcha_answer(call: CallbackQuery) -> None:
                                    f" you are pass!", show_alert=True)
         else:
             await call.answer(text="don't be jerk!\n"
-                                   "wait 1 min", show_alert=True)
+                                   "sit in the corner 4 min", show_alert=True)
             await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=int(user_id),
                                                         permissions=ChatPermissions(can_send_messages=False),
-                                                        until_date=timedelta(seconds=60))
+                                                        until_date=timedelta(seconds=240))
+            logger.info(f"User {user_id} was mute seconds = {240}")
     else:
         await call.answer(text="wrong answer!\n"
-                               "wait 1 min", show_alert=True)
+                               "sit in the corner 4 min", show_alert=True)
         await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=int(user_id),
                                                     permissions=ChatPermissions(can_send_messages=False),
-                                                    until_date=timedelta(seconds=60))
+                                                    until_date=timedelta(seconds=240))
+        logger.info(f"User {user_id} was mute seconds = {240}")
     await asyncio.sleep(1800)
     if captcha_flag:
         pass
     else:
         await call.message.bot.ban_chat_member(chat_id=chat_id, user_id=int(user_id),
-                                               until_date=timedelta(seconds=120))
+                                               until_date=timedelta(seconds=240))
+        logger.info(f"User {user_id} was baned = {240}")
 
 
-def register_callback_captcha(dp: Dispatcher):
+def register_callback_captcha(dp: Dispatcher) -> None:
     dp.register_callback_query_handler(captcha_answer,
                                        lambda call: call.data.startswith("answer_button"))
