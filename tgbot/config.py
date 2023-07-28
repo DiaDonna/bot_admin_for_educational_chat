@@ -1,8 +1,11 @@
 from dataclasses import dataclass
 
 from environs import Env
+# TODO dell dict, use aiogram method.
 
+captcha_flag: dict = dict()
 user_dict: dict = dict()
+
 
 @dataclass
 class TgBot:
