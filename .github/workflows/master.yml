@@ -1,12 +1,12 @@
 name: tg_admin_bot
 env:
   PROJECT_NAME: "tg_admin_bot"
-  BRANCH: "deskent"
+  BRANCH: "master"
   VERSION: ${{ github.sha }}
 
 on:
   push:
-    branches: [ deskent ]
+    branches: [ master ]
 
 jobs:
   deploy:
