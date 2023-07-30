@@ -1,8 +1,9 @@
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
+from typing import List
 
 
-def gen_captcha_keys(temp: int) -> list:
+def gen_captcha_keys(temp: int) -> List[InlineKeyboardButton]:
     """
      Take answer, generate object buttons, return list of object: "KeyboardButton"
     param temp: int answer of the captcha
@@ -11,13 +12,10 @@ def gen_captcha_keys(temp: int) -> list:
     temp = str(temp)
     first_button: InlineKeyboardButton = InlineKeyboardButton(
         text=temp, callback_data=f"answer_button:{temp}")
-    next_button: InlineKeyboardButton = InlineKeyboardButton(
+    wrong_button: InlineKeyboardButton = InlineKeyboardButton(
         text='wrong_answer', callback_data="answer_button:joke")
-    next_last_button: InlineKeyboardButton = InlineKeyboardButton(
-        text='wrong_answer', callback_data="answer_button:joke")
-    last_button: InlineKeyboardButton = InlineKeyboardButton(
-        text='wrong_answer', callback_data="answer_button:joke")
-    out_list = [first_button, next_button, next_last_button, last_button]
+
+    out_list = [first_button, *[wrong_button for _ in range(3)]]
     random.shuffle(out_list)
     return out_list
 
