@@ -1,11 +1,12 @@
 
 from aiogram import Dispatcher
-from aiogram.types import Message, ContentTypes, ReplyKeyboardRemove
+from aiogram.types import Message, ContentTypes, ReplyKeyboardRemove, User
 
 from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
 from tgbot.utils.texts import greeting_text
 from tgbot.handlers.groups.throw_entry_captcha import captcha
+
 
 @logging_message
 async def new_member_info(message: Message) -> None:
@@ -15,7 +16,7 @@ async def new_member_info(message: Message) -> None:
     Handler for greeting new user in group and sending to him some useful links
     """
 
-    bot_user = await message.bot.get_me()
+    bot_user: User = await message.bot.get_me()
     greeting: str = greeting_text(message=message, bot_user=bot_user)
     user_id: str = message.new_chat_members[0].id
 

@@ -9,13 +9,14 @@ def gen_captcha_keys(temp: int) -> List[InlineKeyboardButton]:
     param temp: int answer of the captcha
     return: list of "KeyboardButton" with answer
     """
-    temp = str(temp)
+    temp_str: str = str(temp)
+    numbers_wrong_button: int = 3
     first_button: InlineKeyboardButton = InlineKeyboardButton(
-        text=temp, callback_data=f"answer_button:{temp}")
+        text=temp_str, callback_data=f"answer_button:{temp_str}")
     wrong_button: InlineKeyboardButton = InlineKeyboardButton(
         text='wrong_answer', callback_data="answer_button:joke")
 
-    out_list = [first_button, *[wrong_button for _ in range(3)]]
+    out_list = [first_button, *[wrong_button for _ in range(numbers_wrong_button)]]
     random.shuffle(out_list)
     return out_list
 
