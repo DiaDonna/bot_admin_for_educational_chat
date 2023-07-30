@@ -4,7 +4,7 @@ import asyncio
 from aiogram import Dispatcher
 from aiogram.types import Message, InputFile
 
-from tgbot.utils.captcha import throw_captcha
+from tgbot.utils.captcha import gen_captcha
 from tgbot.keyboards.Inline.captcha_keys import gen_captcha_button_builder
 from tgbot.utils.log_config import logger
 from tgbot.utils.decorators import logging_message
@@ -12,8 +12,8 @@ from tgbot.config import user_dict
 
 
 @logging_message
-async def captcha(message: Message) -> None:
-    """handler for generate captcha image too user
+async def handler_throw_captcha(message: Message) -> None:
+    """handler for generate captcha image to user
            param message: Message
            return None
     """
@@ -21,7 +21,7 @@ async def captcha(message: Message) -> None:
     user: str = message.from_user.id
     user_id: str = message.new_chat_members[0].id
     user_name: str = message.from_user.full_name
-    captcha_image: InputFile = InputFile(throw_captcha(password))
+    captcha_image: InputFile = InputFile(gen_captcha(password))
     user_dict.update({user: password})
 
     msg = await message.answer_photo(photo=captcha_image, caption=f'for{user_name}'
@@ -35,7 +35,7 @@ async def captcha(message: Message) -> None:
 
 
 def register_captcha(dp: Dispatcher) -> None:
-    dp.register_message_handler(captcha,
+    dp.register_message_handler(handler_throw_captcha,
                                 commands=['captcha'],
                                 commands_prefix='/!',
                                 state="*")

@@ -5,7 +5,7 @@ from aiogram.types import Message, ContentTypes, ReplyKeyboardRemove, User
 from tgbot.utils.decorators import logging_message
 from tgbot.utils.log_config import logger
 from tgbot.utils.texts import greeting_text
-from tgbot.handlers.groups.throw_entry_captcha import captcha
+from tgbot.handlers.groups.throw_entry_captcha import handler_throw_captcha
 
 
 @logging_message
@@ -22,7 +22,7 @@ async def new_member_info(message: Message) -> None:
 
     await message.answer(text=greeting, disable_web_page_preview=True, reply_markup=ReplyKeyboardRemove())
     logger.info(f"New User {user_id} was greeting")
-    await captcha(message)
+    await handler_throw_captcha(message)
 
 
 def register_new_member_info(dp: Dispatcher):

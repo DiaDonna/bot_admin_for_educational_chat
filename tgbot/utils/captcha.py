@@ -2,7 +2,7 @@ from io import BytesIO
 from captcha.image import ImageCaptcha
 
 
-def throw_captcha(temp_integer: int) -> BytesIO:
+def gen_captcha(temp_integer: int) -> BytesIO:
     """
      Take some int, generate object ImageCaptcha -> BytesIO return object BytesIO
     param temp_integer: int
