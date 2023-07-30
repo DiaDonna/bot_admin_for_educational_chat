@@ -3,8 +3,15 @@ from dataclasses import dataclass
 from environs import Env
 # TODO dell dict, use aiogram method.
 
-captcha_flag: dict = dict()
+captcha_flag_user_dict: dict = dict()
 user_dict: dict = dict()
+
+
+@dataclass
+class TimingDelta:
+    ban_delta: int
+    mute_delta: int
+    mute_wrong_delta: int
 
 
 @dataclass
@@ -17,6 +24,7 @@ class TgBot:
 class Miscellaneous:
     hastebin_url: str
     verified_groups: list[int]
+
 
 @dataclass
 class Database:
