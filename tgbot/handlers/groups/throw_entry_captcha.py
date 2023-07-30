@@ -13,7 +13,7 @@ from tgbot.config import user_dict
 
 @logging_message
 async def handler_throw_captcha(message: Message) -> None:
-    """handler for generate captcha image to user
+    """Handler for generate captcha image to user
            param message: Message
            return None
     """
