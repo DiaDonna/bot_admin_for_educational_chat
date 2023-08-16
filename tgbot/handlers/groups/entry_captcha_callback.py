@@ -19,6 +19,8 @@ async def captcha_answer(call: CallbackQuery) -> None:
     user_id: str = call.from_user.id
     chat_id: str = call.message.chat.id
     captcha_flag_user_dict.update({user_id: False})
+    time_rise_asyncio = 1800
+    time_minute = 60
     if password.isdigit():
         if int(password) == user_dict.get(user_id):
             await call.answer(text=f"{call.from_user.full_name}"
@@ -29,24 +31,24 @@ async def captcha_answer(call: CallbackQuery) -> None:
                                    "sit in the corner 4 min", show_alert=True)
             await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=int(user_id),
                                                         permissions=ChatPermissions(can_send_messages=False),
-                                                        until_date=timedelta(seconds=240))
-            logger.info(f"User {user_id} was mute seconds = {240}")
+                                                        until_date=timedelta(seconds=time_minute * 4))
+            logger.info(f"User {user_id} was mute seconds = {time_minute * 4}")
     else:
         await call.answer(text="wrong answer!\n"
                                "sit in the corner 1 min", show_alert=True)
         await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=int(user_id),
                                                     permissions=ChatPermissions(can_send_messages=False),
-                                                    until_date=timedelta(seconds=60))
-        logger.info(f"User {user_id} was mute seconds = {240}")
+                                                    until_date=timedelta(seconds=time_minute))
+        logger.info(f"User {user_id} was mute seconds = {time_minute}")
     # TODO change to schedule (use crone, scheduler, nats..)
-    await asyncio.sleep(1800)
-    if captcha_flag_user_dict:
+    await asyncio.sleep(time_rise_asyncio)
+    if captcha_flag_user_dict.get(user_id):
         captcha_flag_user_dict.pop(user_id)
         user_dict.pop(user_id)
     else:
         await call.message.bot.ban_chat_member(chat_id=chat_id, user_id=int(user_id),
-                                               until_date=timedelta(seconds=240))
-        logger.info(f"User {user_id} was baned = {240}")
+                                               until_date=timedelta(seconds=time_minute * 4))
+        logger.info(f"User {user_id} was baned = {time_minute * 4}")
 
 
 def register_callback_captcha(dp: Dispatcher) -> None:

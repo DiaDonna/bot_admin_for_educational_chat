@@ -23,12 +23,13 @@ async def handler_throw_captcha(message: Message) -> None:
     user_name: str = message.from_user.full_name
     captcha_image: InputFile = InputFile(gen_captcha(password))
     user_dict.update({user: password})
+    time_rise_asyncio = 300
 
     msg = await message.answer_photo(photo=captcha_image, caption=f'for{user_name}'
                                                                   f' this {password} is answer',
                                      reply_markup=gen_captcha_button_builder(password)
                                      )
-    await asyncio.sleep(300)
+    await asyncio.sleep(time_rise_asyncio)
     await msg.delete()
 
     logger.info(f"User {user_id} throw captcha")
