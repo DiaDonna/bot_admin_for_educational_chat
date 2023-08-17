@@ -19,24 +19,23 @@ async def handler_throw_captcha(message: Message) -> None:
     """
     password: int = random.randint(1000, 9999)
     user: str = message.from_user.id
-    user_id: str = message.new_chat_members[0].id
     user_name: str = message.from_user.full_name
     captcha_image: InputFile = InputFile(gen_captcha(password))
     user_dict.update({user: password})
-    time_rise_asyncio = 300
+    TIME_RISE_ASYNCIO: int = 300
 
     msg = await message.answer_photo(photo=captcha_image, caption=f'for{user_name}'
                                                                   f' this {password} is answer',
                                      reply_markup=gen_captcha_button_builder(password)
                                      )
-    await asyncio.sleep(time_rise_asyncio)
+    await asyncio.sleep(TIME_RISE_ASYNCIO)
     await msg.delete()
 
-    logger.info(f"User {user_id} throw captcha")
+    logger.info(f"User {user} throw captcha")
 
 
 def register_captcha(dp: Dispatcher) -> None:
     dp.register_message_handler(handler_throw_captcha,
                                 commands=['captcha'],
-                                commands_prefix='/!',
+                                commands_prefix='!/',
                                 state="*")

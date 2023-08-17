@@ -9,9 +9,8 @@ user_dict: dict = dict()
 
 @dataclass
 class TimingDelta:
-    ban_delta: int
-    mute_delta: int
-    mute_wrong_delta: int
+    time_rise_asyncio_ban: int
+    minute_delta: int
 
 
 @dataclass
@@ -40,6 +39,7 @@ class Config:
     tg_bot: TgBot
     misc: Miscellaneous
     db: Database
+    t_delta: TimingDelta
 
 
 def load_config(path: str = None):
@@ -61,5 +61,9 @@ def load_config(path: str = None):
             name=env.str("POSTGRES_DB"),
             port=env.str("POSTGRES_PORT"),
             password=env.str("POSTGRES_PASSWORD"),
+        ),
+        t_delta=TimingDelta(
+            time_rise_asyncio_ban=int(env.str("TIME_RISE_ASYNCIO_BAN")),
+            minute_delta=int(env.str("TIME_MINUTE"))
         )
     )

@@ -63,4 +63,3 @@ venv.bak/
 .env
 logs
 logs/*
-.env.dist
