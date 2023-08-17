@@ -11,6 +11,7 @@ user_dict: dict = dict()
 class TimingDelta:
     time_rise_asyncio_ban: int
     minute_delta: int
+    time_rise_asyncio_del_msg: int
 
 
 @dataclass
@@ -64,6 +65,7 @@ def load_config(path: str = None):
         ),
         t_delta=TimingDelta(
             time_rise_asyncio_ban=int(env.str("TIME_RISE_ASYNCIO_BAN")),
-            minute_delta=int(env.str("TIME_MINUTE"))
+            minute_delta=int(env.str("TIME_MINUTE")),
+            time_rise_asyncio_del_msg=int(env.str("TIME_RISE_ASYNCIO_DEL_MSG"))
         )
     )

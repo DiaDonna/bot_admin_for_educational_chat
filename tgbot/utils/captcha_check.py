@@ -12,6 +12,9 @@ async def check_captcha(call: CallbackQuery, config: Config):
                param call: CallbackQuery
                return None
         """
+    # TODO 1) new bag aiogram.utils.exceptions.MethodIsNotAvailable: Method is available only for supergroups
+    # TODO    is bag if group not super , add handler admin, type group
+    # TODO 2) optimise ternary
     password: str = call.data.split(':')[1]
     user_id: str = call.from_user.id
     chat_id: str = call.message.chat.id
