@@ -64,8 +64,8 @@ def load_config(path: str = None):
             password=env.str("POSTGRES_PASSWORD"),
         ),
         time_delta=TimingDelta(
-            time_rise_asyncio_ban=int(env.str("TIME_RISE_ASYNCIO_BAN")),
-            minute_delta=int(env.str("TIME_MINUTE")),
-            time_rise_asyncio_del_msg=int(env.str("TIME_RISE_ASYNCIO_DEL_MSG"))
+            time_rise_asyncio_ban=int(env.str("TIME_RAISE_ASYNCIO_BAN")),
+            minute_delta=int(env.str("TIME_ONE_MINUTE")),
+            time_rise_asyncio_del_msg=int(env.str("TIME_RAISE_ASYNCIO_DEL_MSG"))
         )
     )

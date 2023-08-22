@@ -17,12 +17,12 @@ async def new_member_info(message: Message, config: Config) -> None:
 
     Handler for greeting new user in group and sending to him some useful links
     """
-
+    # TODO need solve of bag new_user != user_id
     bot_user: User = await message.bot.get_me()
     greeting: str = greeting_text(message=message, bot_user=bot_user)
-    user_id: str = message.new_chat_members[0].id
+    user_id: int = message.new_chat_members[0].id
 
-    msg = await message.answer(text=greeting, disable_web_page_preview=True, reply_markup=ReplyKeyboardRemove())
+    msg: Message = await message.answer(text=greeting, disable_web_page_preview=True, reply_markup=ReplyKeyboardRemove())
     logger.info(f"New User {user_id} was greeting")
     await handler_throw_captcha(message, config)
     await asyncio.sleep(config.time_delta.time_rise_asyncio_del_msg)

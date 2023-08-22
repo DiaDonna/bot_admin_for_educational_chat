@@ -1,4 +1,3 @@
-import asyncio
 
 from aiogram.types import ChatPermissions, CallbackQuery
 from datetime import timedelta
@@ -16,8 +15,8 @@ async def check_captcha(call: CallbackQuery, config: Config):
     # TODO    is bag if group not super , add handler admin, type group
     # TODO 2) optimise ternary
     password: str = call.data.split(':')[1]
-    user_id: str = call.from_user.id
-    chat_id: str = call.message.chat.id
+    user_id: int = int(call.from_user.id)
+    chat_id: int = int(call.message.chat.id)
     captcha_flag_user_dict.update({user_id: False})
     minute_delta: int = config.time_delta.minute_delta
     if password.isdigit():
@@ -28,14 +27,14 @@ async def check_captcha(call: CallbackQuery, config: Config):
         else:
             await call.answer(text="don't be jerk!\n"
                                    "sit in the corner 4 min", show_alert=True)
-            await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=int(user_id),
+            await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                         permissions=ChatPermissions(can_send_messages=False),
                                                         until_date=timedelta(seconds=minute_delta * 4))
             logger.info(f"User {user_id} was mute seconds = {minute_delta * 4}")
     else:
         await call.answer(text="wrong answer!\n"
                                "sit in the corner 1 min", show_alert=True)
-        await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=int(user_id),
+        await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                     permissions=ChatPermissions(can_send_messages=False),
                                                     until_date=timedelta(seconds=minute_delta))
         logger.info(f"User {user_id} was mute seconds = {minute_delta}")
