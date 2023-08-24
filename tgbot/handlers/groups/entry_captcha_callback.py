@@ -1,4 +1,3 @@
-import asyncio
 
 from aiogram import Dispatcher
 from aiogram.types import CallbackQuery

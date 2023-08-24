@@ -1,4 +1,4 @@
-from aiogram.types import Message, User
+from aiogram.types import Message, User, CallbackQuery
 
 
 def user_commands_guide() -> str:
@@ -66,9 +66,9 @@ def admin_help_text(message: Message) -> str:
     )
 
 
-def greeting_text(message: Message, bot_user: User) -> str:
+def greeting_text(call: CallbackQuery, bot_user: User) -> str:
     return (
-        f'Привет, {message.new_chat_members[0].get_mention()}!\n\n'
+        f'Привет, {call.from_user.full_name}!\n\n'
         f'\n\n<b>Для начала ответьте на каптчу</b>\n'
         f'Прежде чем задавать вопросы - прочитай <b>базовые советы по дипломному проекту:</b> '
         f'<a href="https://magnetic-evergreen-187.notion.site/Python-Basic'
