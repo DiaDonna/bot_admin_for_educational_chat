@@ -4,7 +4,7 @@ from aiogram.types import Message, ContentTypes
 
 from tgbot.config import Config
 from tgbot.utils.decorators import logging_message
-from tgbot.handlers.groups.throw_entry_captcha import handler_throw_captcha
+from tgbot.utils.captcha import throw_captcha
 
 
 @logging_message
@@ -14,7 +14,7 @@ async def new_member_info(message: Message, config: Config) -> None:
 
     Handler for greeting new user in group and sending to him some useful links
     """
-    await handler_throw_captcha(message, config)
+    await throw_captcha(message, config)
     # TODO add log del msg
 
 

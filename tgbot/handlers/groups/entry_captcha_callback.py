@@ -5,8 +5,6 @@ from tgbot.utils.decorators import logging_message
 from tgbot.config import Config
 from tgbot.utils.captcha_check import check_captcha
 
-# TODO add mute before captcha answer, remove bag(BAN IF ANSWER TO ANOTHER CAPTCHA).
-
 
 @logging_message
 async def captcha_answer(call: CallbackQuery, config: Config) -> None:
