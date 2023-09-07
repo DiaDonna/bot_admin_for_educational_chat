@@ -50,3 +50,8 @@
     /toprep - выодит рейтинг пользователей группы
     </li>
 </ol>
+
+# TODO recipe to deploy
+- git clone from rep
+- change .env.dist to .env replace you date
+- docker compose up
