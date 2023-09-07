@@ -5,7 +5,7 @@ from environs import Env
 # FIXME new_user_id: int = int(*user_dict.keys())
 # FIXME bot_container_name  | TypeError: int() takes at most 2 arguments (3 given)
 
-captcha_flag_user_dict: dict = dict()
+capcha_flag_user_dict: dict = dict()
 user_dict: dict = dict()
 
 

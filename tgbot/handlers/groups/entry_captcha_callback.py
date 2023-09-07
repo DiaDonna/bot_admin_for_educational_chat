@@ -3,7 +3,7 @@ from aiogram import Dispatcher
 from aiogram.types import CallbackQuery
 from tgbot.utils.decorators import logging_message
 from tgbot.config import Config
-from tgbot.utils.captcha_check import check_captcha
+from tgbot.utils.capcha_check import check_captcha
 
 
 @logging_message
