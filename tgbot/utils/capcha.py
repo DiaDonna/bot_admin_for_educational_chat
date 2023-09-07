@@ -60,10 +60,10 @@ async def throw_capcha(message: Message, config: Config) -> None:
     captcha_image: InputFile = InputFile(gen_captcha(password))
     await message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                            permissions=ChatPermissions(can_send_messages=False),
-                                           until_date=timedelta(seconds=minute_delta))
+                                           until_date=timedelta(seconds=time_rise_asyncio_ban))
     logger.info(f"User {user_id} mute before answer")
     msg: Message = await message.answer_photo(photo=captcha_image, caption=f'Привет, {user_name} пожалуйста'
-                                                                           f' ответь {password} иначе Вас кикнут! ',
+                                                                           f' ответьте {password} иначе Вас кикнут! ',
                                               reply_markup=gen_captcha_button_builder(password)
                                               )
     logger.info(f"User {user_id} throw captcha")
