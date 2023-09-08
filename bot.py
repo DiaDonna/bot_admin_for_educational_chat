@@ -72,7 +72,6 @@ async def main():
     storage = MemoryStorage()
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     dp = Dispatcher(bot, storage=storage)
-
     bot['config'] = config
 
     dp.filters_factory.bind(ThankMessageFilter, event_handlers=[dp.message_handlers])
@@ -90,12 +89,10 @@ async def main():
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(
-            allowed_updates=(
-                    AllowedUpdates.MESSAGE or
-                    AllowedUpdates.CHAT_MEMBER or
-                    AllowedUpdates.CALLBACK_QUERY or
-                    AllowedUpdates.EDITED_MESSAGE
-            )
+            allowed_updates=AllowedUpdates.MESSAGE + AllowedUpdates.EDITED_MESSAGE
+                            + AllowedUpdates.CALLBACK_QUERY + AllowedUpdates.CHAT_MEMBER
+                            + AllowedUpdates.CHAT_JOIN_REQUEST + AllowedUpdates.POLL_ANSWER
+                            + AllowedUpdates.INLINE_QUERY + AllowedUpdates.PRE_CHECKOUT_QUERY
         )
     finally:
         await dp.storage.close()
