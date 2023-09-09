@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from environs import Env
 # FIXME  now!!! dell dict, use aiogram method.
 # FIXME new_user_id: int = int(*user_dict.keys())
-# FIXME bot_container_name  | TypeError: int() takes at most 2 arguments (3 given)
 
 capcha_flag_user_dict: dict = dict()
 user_dict: dict = dict()
