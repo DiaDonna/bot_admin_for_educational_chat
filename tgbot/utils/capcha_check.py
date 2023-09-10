@@ -24,10 +24,14 @@ async def check_captcha(call: CallbackQuery, config: Config):
     chat_id: int = int(call.message.chat.id)
     minute_delta: int = config.time_delta.minute_delta
     if user_id in admin_ids:
-        msg = await call.answer(text="Админ не балуйся \n"
-                                        "иди работать!")
+        msg_temp = await call.message.answer(text="Админ не балуйся \n"
+                                                  "иди работать!")
         await asyncio.sleep(minute_delta)
-        await msg.delete()
+        try:
+            await msg_temp.delete()
+        except AttributeError as error:
+            logger.info(f"user id {user_id}  {error}")
+
         logger.info(f"admin:{user_id} name:{call.from_user.full_name} was play")
     else:
         if user_id in user_dict.keys():
