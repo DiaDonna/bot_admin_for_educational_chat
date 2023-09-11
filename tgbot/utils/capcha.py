@@ -56,7 +56,7 @@ async def throw_capcha(message: Message, config: Config) -> None:
         user_id = new_user_id
         user_name = message.new_chat_members[0].get_mention()
     except IndexError as err:
-        logger.warn(f"User {user_id} {user_name} not new {err}")
+        logger.info(f"User {user_id} {user_name} not new {err}")
     if user_id in admin_ids:
         msg = await message.answer(text="Админ не балуйся \n"
                                         "иди работать!")
@@ -84,7 +84,7 @@ async def throw_capcha(message: Message, config: Config) -> None:
         else:
             await message.bot.kick_chat_member(chat_id=chat_id, user_id=user_id,
                                                until_date=timedelta(seconds=minute_delta))
-            logger.warn(f"User {user_id} was kicked = {minute_delta}")
+            logger.info(f"User {user_id} was kicked = {minute_delta}")
             await dict_pop_executor(user_id)
         logger.info(f"for User {user_id} del msg captcha")
 

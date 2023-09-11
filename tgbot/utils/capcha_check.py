@@ -60,11 +60,11 @@ async def check_captcha(call: CallbackQuery, config: Config):
                 await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                             permissions=ChatPermissions(can_send_messages=False),
                                                             until_date=timedelta(seconds=minute_delta * 4))
-                logger.warn(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta * 4}")
+                logger.info(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta * 4}")
         else:
             await call.answer(text="wrong answer!\n"
                                    "sit in the corner 1 min", show_alert=True)
             await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                         permissions=ChatPermissions(can_send_messages=False),
                                                         until_date=timedelta(seconds=minute_delta))
-            logger.warn(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta}")
+            logger.info(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta}")
