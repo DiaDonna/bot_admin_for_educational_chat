@@ -19,7 +19,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
     # FIXME 2) optimise ternary
     # FIXME 3) no check if admin
     admin_ids: list[int] = await get_admins_ids_for_help_and_paste(call.message)
-    password: str = call.data.split(':')[1]
+    password: int = int(call.data.split(':')[1])
     user_id: int = int(call.from_user.id)
     chat_id: int = int(call.message.chat.id)
     minute_delta: int = config.time_delta.minute_delta
@@ -36,8 +36,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
     else:
         if user_id in user_dict.keys():
             capcha_flag_user_dict.update({user_id: False})
-        if password.isdigit():
-            if int(password) == user_dict.get(user_id):
+            if password == user_dict.get(user_id):
                 await call.answer(text=f"{call.from_user.full_name}"
                                        f" you are pass!", show_alert=True)
                 await call.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
@@ -55,16 +54,17 @@ async def check_captcha(call: CallbackQuery, config: Config):
                 logger.info(f"del greeting msg for {user_id}")
 
             else:
-                await call.answer(text="don't be jerk!\n"
-                                       "sit in the corner 4 min", show_alert=True)
+                await call.answer(text="wrong answer!\n"
+                                       "sit in the corner 1 min", show_alert=True)
                 await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                             permissions=ChatPermissions(can_send_messages=False),
-                                                            until_date=timedelta(seconds=minute_delta * 4))
-                logger.info(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta * 4}")
+                                                            until_date=timedelta(seconds=minute_delta))
+                logger.info(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta}")
+
         else:
-            await call.answer(text="wrong answer!\n"
-                                   "sit in the corner 1 min", show_alert=True)
+            await call.answer(text="don't be jerk!\n"
+                                   "sit in the corner 4 min", show_alert=True)
             await call.message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                         permissions=ChatPermissions(can_send_messages=False),
-                                                        until_date=timedelta(seconds=minute_delta))
-            logger.info(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta}")
+                                                        until_date=timedelta(seconds=minute_delta * 4))
+            logger.info(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta * 4}")
