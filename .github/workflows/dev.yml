@@ -1,13 +1,12 @@
-name: tg_admin_bot-dev
+name: tg_admin_bot
 env:
   PROJECT_NAME: "tg_admin_bot"
-  BRANCH: "captcha"
+  BRANCH: "dev"
   VERSION: ${{ github.sha }}
-  DEPLOY_PATH_TEST: "/home/deskent/projects/test/test_bot"
 
 on:
   push:
-    branches: [ captcha ]
+    branches: [ dev ]
 
 jobs:
   deploy:
@@ -21,7 +20,7 @@ jobs:
           username: ${{ secrets.USERNAME_PROD }}
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
           script: |
-            cd ${{ env.DEPLOY_PATH_TEST }} \
+            cd ${{ secrets.DEPLOY_PATH_PROD }} \
             && git checkout ${{ env.BRANCH }} \
             && git pull \
             && docker-compose up --build -d
