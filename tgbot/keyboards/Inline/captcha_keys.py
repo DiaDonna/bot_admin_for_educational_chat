@@ -3,6 +3,18 @@ import random
 from typing import List
 
 
+def wrong_button(temp_str: str):
+    """
+         Take answer, generate object button, return object: "InlineKeyboardButton"
+        param temp_str: str answer of the captcha
+        return: "InlineKeyboardButton" with wrong answer
+        """
+    key: int = random.randint(1000, (int(temp_str) - 1))
+    w_b: InlineKeyboardButton = InlineKeyboardButton(
+        text=f'{key}', callback_data=f"answer_button:{random.randint(1000, (int(temp_str) - 1))}")
+    return w_b
+
+
 def gen_captcha_keys(temp: int) -> List[InlineKeyboardButton]:
     """
      Take answer, generate object buttons, return list of object: "KeyboardButton"
@@ -13,10 +25,8 @@ def gen_captcha_keys(temp: int) -> List[InlineKeyboardButton]:
     numbers_wrong_button: int = 3
     first_button: InlineKeyboardButton = InlineKeyboardButton(
         text=temp_str, callback_data=f"answer_button:{temp_str}")
-    wrong_button: InlineKeyboardButton = InlineKeyboardButton(
-        text='wrong_answer', callback_data="answer_button:joke")
 
-    out_list = [first_button, *[wrong_button for _ in range(numbers_wrong_button)]]
+    out_list = [first_button, *[wrong_button(temp_str) for _ in range(numbers_wrong_button)]]
     random.shuffle(out_list)
     return out_list
 
