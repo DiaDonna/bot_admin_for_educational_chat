@@ -1,0 +1,60 @@
+name: tg_admin_bot
+env:
+  PROJECT_NAME: "tg_admin_bot"
+  BRANCH: "master"
+  VERSION: ${{ github.sha }}
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Deploy code to remote server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST_PROD }}
+          username: ${{ secrets.USERNAME_PROD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          script: |
+            cd ${{ secrets.DEPLOY_PATH_PROD }} \
+            && git checkout ${{ env.BRANCH }} \
+            && git pull \
+            && docker-compose up --build -d
+
+      - uses: actions/checkout@v3
+
+      - name: Telegram notification on Failure
+        if: failure()
+        env:
+          MESSAGE: "
+            Git pull: FAILED!!!
+            \n[${{ env.PROJECT_NAME}}]: Branch ${{ env.BRANCH }}:
+            \n${{ github.event.head_commit.message }}
+            \nVersion: ${{ env.VERSION}}
+            "
+        run: |
+          curl \
+          -X POST \
+          -H 'Content-Type: application/json' \
+          -d '{"chat_id": ${{ secrets.TELEGRAM_CHAT_ID }}, "text": "${{ env.MESSAGE }}", "disable_notification": false}' \
+          https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
+
+      - name: Send notification on Success
+        env:
+          MESSAGE: "
+            Git pull: OK
+            \n[${{ env.PROJECT_NAME}}]: Branch ${{ env.BRANCH }}:
+            \n${{ github.event.head_commit.message }}
+            \nVersion: ${{ env.VERSION}}
+            "
+        run: |
+          curl \
+          -X POST \
+          -H 'Content-Type: application/json' \
+          -d '{"chat_id": ${{ secrets.TELEGRAM_CHAT_ID }}, "text": "${{ env.MESSAGE }}", "disable_notification": true}' \
+          https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage
+
