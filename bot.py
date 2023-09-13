@@ -89,10 +89,7 @@ async def main():
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(
-            allowed_updates=AllowedUpdates.CHAT_MEMBER
-            | AllowedUpdates.CALLBACK_QUERY
-            | AllowedUpdates.EDITED_MESSAGE
-            | AllowedUpdates.MESSAGE
+            allowed_updates=AllowedUpdates.all()
         )
     finally:
         await dp.storage.close()
