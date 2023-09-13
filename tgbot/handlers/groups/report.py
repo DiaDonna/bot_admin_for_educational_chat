@@ -28,7 +28,6 @@ async def report_command(message: Message, config: Config):
             chat=message.chat.id,
             from_user=message.reply_to_message.from_user.id,
         ))
-
     # если группа частная, то формируем ссылку для перехода к группе,
     # а если публичная, то к ссылке на группу добавляем ссылку на сообщение для перехода к конкретному сообщению
     url_to_alert: str = await message.chat.get_url()

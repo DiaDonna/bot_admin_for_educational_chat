@@ -1,6 +1,18 @@
 from dataclasses import dataclass
 
 from environs import Env
+# FIXME  now!!! dell dict, use aiogram method.
+# FIXME new_user_id: int = int(*user_dict.keys())
+
+capcha_flag_user_dict: dict = dict()
+user_dict: dict = dict()
+
+
+@dataclass
+class TimingDelta:
+    time_rise_asyncio_ban: int
+    minute_delta: int
+    time_rise_asyncio_del_msg: int
 
 
 @dataclass
@@ -13,6 +25,7 @@ class TgBot:
 class Miscellaneous:
     hastebin_url: str
     verified_groups: list[int]
+
 
 @dataclass
 class Database:
@@ -28,12 +41,12 @@ class Config:
     tg_bot: TgBot
     misc: Miscellaneous
     db: Database
+    time_delta: TimingDelta
 
 
 def load_config(path: str = None):
     env = Env()
     env.read_env(path)
-
     return Config(
         tg_bot=TgBot(
             token=env.str("BOT_TOKEN"),
@@ -49,5 +62,10 @@ def load_config(path: str = None):
             name=env.str("POSTGRES_DB"),
             port=env.str("POSTGRES_PORT"),
             password=env.str("POSTGRES_PASSWORD"),
+        ),
+        time_delta=TimingDelta(
+            time_rise_asyncio_ban=int(env.str("TIME_RAISE_ASYNCIO_BAN")),
+            minute_delta=int(env.str("TIME_ONE_MINUTE")),
+            time_rise_asyncio_del_msg=int(env.str("TIME_RAISE_ASYNCIO_DEL_MSG"))
         )
     )

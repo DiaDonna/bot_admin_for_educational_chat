@@ -32,8 +32,9 @@ def logging_message(func: Callable) -> Callable:
     @wraps(func)
     async def wrapped_func(*args, **kwargs) -> Any:
         try:
-            message: Message = args[0]
-            await add_to_log_message(message=message)
+            if args:
+                message: Message = args[0]
+                await add_to_log_message(message=message)
         except IndexError as exc:
             logger.error('Function name: {func.__name__}', exc_info=exc)
         return await func(*args, **kwargs)

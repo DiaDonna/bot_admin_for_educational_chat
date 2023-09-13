@@ -16,6 +16,8 @@ from tgbot.handlers.admin.ban_to_user import register_bun
 from tgbot.handlers.admin.ro_to_user import register_ro
 from tgbot.handlers.for_incorrect_using_commands import register_incorrect_using_command
 from tgbot.handlers.for_private.for_private import register_echo
+from tgbot.handlers.groups.entry_captcha_callback import register_callback_captcha
+from tgbot.handlers.groups.throw_entry_captcha import register_capcha
 from tgbot.handlers.groups.hastebin import register_paste_command
 from tgbot.handlers.groups.report import register_report_command
 from tgbot.handlers.groups.reputation import register_thank_message, register_reputation_command
@@ -42,6 +44,8 @@ def register_all_handlers(dp):
     register_user(dp)
     register_echo(dp)
     register_incorrect_using_command(dp)
+    register_capcha(dp)
+    register_callback_captcha(dp)
 
     register_bun(dp)
     register_ro(dp)
@@ -68,7 +72,6 @@ async def main():
     storage = MemoryStorage()
     bot = Bot(token=config.tg_bot.token, parse_mode='HTML')
     dp = Dispatcher(bot, storage=storage)
-
     bot['config'] = config
 
     dp.filters_factory.bind(ThankMessageFilter, event_handlers=[dp.message_handlers])
@@ -87,10 +90,10 @@ async def main():
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(
             allowed_updates=(
-                    AllowedUpdates.MESSAGE
-                    or AllowedUpdates.CHAT_MEMBER
-                    or AllowedUpdates.CALLBACK_QUERY
-                    or AllowedUpdates.EDITED_MESSAGE
+                    AllowedUpdates.CHAT_MEMBER
+                    | AllowedUpdates.CALLBACK_QUERY
+                    | AllowedUpdates.MESSAGE
+                    | AllowedUpdates.EDITED_MESSAGE
             )
         )
     finally:
