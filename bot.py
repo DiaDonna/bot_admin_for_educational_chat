@@ -30,16 +30,6 @@ from tgbot.middlewares.environment import EnvironmentMiddleware
 from tgbot.utils.log_config import logger
 
 
-def get_updates_in_use(dp: Dispatcher):
-    available_updates = (
-        "callback_query_handlers", "channel_post_handlers", "chat_member_handlers",
-        "chosen_inline_result_handlers", "edited_channel_post_handlers", "edited_message_handlers",
-        "inline_query_handlers", "message_handlers", "my_chat_member_handlers", "poll_answer_handlers",
-        "poll_handlers", "pre_checkout_query_handlers", "shipping_query_handlers", "chat_join_request_handlers"
-    )
-    return [item.replace("_handlers", "") for item in available_updates if len(dp.__getattribute__(item).handlers) > 0]
-
-
 def register_all_middlewares(dp, config):
     dp.setup_middleware(EnvironmentMiddleware(config=config))
     dp.setup_middleware(VerifiedGroupsMiddleware())
@@ -98,9 +88,7 @@ async def main():
 
     try:
         await bot.delete_webhook(drop_pending_updates=True)
-        await dp.start_polling(
-            allowed_updates=get_updates_in_use(dp)
-        )
+        await dp.start_polling(allowed_updates=AllowedUpdates.CHAT_MEMBER+AllowedUpdates.CALLBACK_QUERY+AllowedUpdates.MESSAGE+AllowedUpdates.EDITED_MESSAGE+AllowedUpdates.PRE_CHECKOUT_QUERY+AllowedUpdates.INLINE_QUERY + AllowedUpdates.CHAT_JOIN_REQUEST)
     finally:
         await dp.storage.close()
         await dp.storage.wait_closed()
