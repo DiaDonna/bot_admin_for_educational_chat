@@ -66,9 +66,9 @@ def admin_help_text(message: Message) -> str:
     )
 
 
-def greeting_text(message: ChatMemberUpdated, bot_user: User) -> str:
+def greeting_text(call: CallbackQuery, bot_user: User) -> str:
     return (
-        f'Привет, {message.new_chat_member.user.get_mention()}!\n\n'
+        f'Привет, {call.from_user.full_name}!\n\n'
         f'Прежде чем задавать вопросы - прочитай <b>базовые советы по дипломному проекту:</b> '
         f'<a href="https://magnetic-evergreen-187.notion.site/Python-Basic'
         f'-3ac614e60b7e434e9d9c018023319c04"> ТУТ </a> '

@@ -6,6 +6,8 @@ import asyncio
 from datetime import timedelta
 
 from aiogram.types import Message, InputFile, ChatPermissions
+from typing import List
+
 from tgbot.keyboards.Inline.captcha_keys import gen_captcha_button_builder
 from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
 from tgbot.utils.log_config import logger
@@ -45,7 +47,7 @@ async def throw_capcha(message: Message, config: Config) -> None:
            param message: Message
            return None
     """
-    admin_ids: list[int] = await get_admins_ids_for_help_and_paste(message)
+    admin_ids: List[int] = await get_admins_ids_for_help_and_paste(message)
     user_id: int = int(message.from_user.id)
     user_name: str = message.from_user.full_name
     chat_id: int = int(message.chat.id)
