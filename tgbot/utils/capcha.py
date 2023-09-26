@@ -5,6 +5,7 @@ import random
 import asyncio
 from datetime import timedelta
 
+from aiogram.utils.exceptions import MessageToDeleteNotFound
 from aiogram.types import Message, InputFile, ChatPermissions, ChatMemberUpdated, ReplyKeyboardRemove, ChatMember
 from typing import List
 
@@ -85,7 +86,10 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
         logger.info(f"User {user_id} throw captcha")
         # FIXME change to schedule (use crone, scheduler, nats..)
         await asyncio.sleep(time_rise_asyncio_ban)
-        await msg.delete()
+        try:
+            await msg.delete()
+        except MessageToDeleteNotFound as error:
+            logger.info(f"{error} msg {user_id}")
         if capcha_flag_user_dict.get(user_id):
             await dict_pop_executor(user_id)
         else:

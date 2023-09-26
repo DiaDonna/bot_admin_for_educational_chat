@@ -45,6 +45,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
                 await call.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                     permissions=ChatPermissions(can_send_messages=True),
                                                     until_date=timedelta(seconds=minute_delta))
+                await call.bot.delete_message(chat_id=chat_id, message_id=call.message.message_id)
                 logger.info(f"User id:{user_id} name:{call.from_user.full_name}was pass")
                 capcha_flag_user_dict.update({user_id: True})
                 bot_user: User = await call.message.bot.get_me()
