@@ -54,6 +54,7 @@ def register_all_handlers(dp):
     register_paste_command(dp)
     register_report_command(dp)
 
+    register_capcha(dp)
     register_thank_message(dp)
     register_reputation_command(dp)
 

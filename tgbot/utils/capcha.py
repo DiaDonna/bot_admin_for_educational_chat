@@ -76,7 +76,7 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
                                                permissions=ChatPermissions(can_send_messages=False),
                                                until_date=timedelta(seconds=time_rise_asyncio_ban))
         logger.info(f"User {user_id} mute before answer")
-        caption: str = f'Привет, {user_name}пожалуйста ответьте {password} иначе Вас кикнут!'
+        caption: str = f'Привет, {user_name} пожалуйста ответьте {password} иначе Вас кикнут!'
         msg: Message = await message.bot.send_photo(chat_id=chat_id,
                                                     photo=captcha_image,
                                                     caption=caption,
