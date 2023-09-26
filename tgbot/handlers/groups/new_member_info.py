@@ -16,7 +16,7 @@ async def new_member_info(message: ChatMemberUpdated, config: Config) -> None:
 
     Handler for greeting new user in group and sending to him some useful links
     """
-    throw_capcha(message=message, config=config)
+    await throw_capcha(message=message, config=config)
 
 
 def register_new_member_info(dp: Dispatcher):

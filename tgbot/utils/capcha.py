@@ -5,11 +5,10 @@ import random
 import asyncio
 from datetime import timedelta
 
-from aiogram.types import Message, InputFile, ChatPermissions
+from aiogram.types import Message, InputFile, ChatPermissions, ChatMemberUpdated, ReplyKeyboardRemove, ChatMember
 from typing import List
 
 from tgbot.keyboards.Inline.captcha_keys import gen_captcha_button_builder
-from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
 from tgbot.utils.log_config import logger
 from tgbot.utils.decorators import logging_message
 from tgbot.config import user_dict, Config, capcha_flag_user_dict
@@ -41,27 +40,31 @@ def gen_captcha(temp_integer: int) -> BytesIO:
 
 
 @logging_message
-async def throw_capcha(message: Message, config: Config) -> None:
+async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
     """
            generate captcha image send to user in chat
            param message: Message
            return None
     """
-    admin_ids: List[int] = await get_admins_ids_for_help_and_paste(message)
+    admins: List[ChatMember] = await message.bot.get_chat_administrators(message.chat.id)
+    admin_ids: List[int] = [admin.user.id for admin in admins if not admin.user.is_bot]
     user_id: int = int(message.from_user.id)
     user_name: str = message.from_user.full_name
     chat_id: int = int(message.chat.id)
     time_rise_asyncio_ban: int = config.time_delta.time_rise_asyncio_ban
     minute_delta: int = config.time_delta.minute_delta
     try:
-        new_user_id: int = int(message.new_chat_members[0].id)
+        new_user_id: int = int(message.new_chat_member.user.id)
         user_id = new_user_id
-        user_name = message.new_chat_members[0].get_mention()
+        user_name = message.new_chat_member.user.full_name
     except IndexError as err:
         logger.info(f"User {user_id} {user_name} not new {err}")
     if user_id in admin_ids:
-        msg = await message.answer(text="Админ не балуйся \n"
-                                        "иди работать!")
+        msg = await message.bot.send_message(chat_id=chat_id, disable_web_page_preview=True,
+                                             text="Админ не балуйся иди работать!", reply_markup=ReplyKeyboardRemove())
+        logger.info("New User {user} was greeting".format(
+            user=message.new_chat_member.user.id)
+        )
         await asyncio.sleep(minute_delta)
         await msg.delete()
         logger.info(f"admin:{user_id} name:{message.from_user.full_name} was play")
@@ -73,10 +76,12 @@ async def throw_capcha(message: Message, config: Config) -> None:
                                                permissions=ChatPermissions(can_send_messages=False),
                                                until_date=timedelta(seconds=time_rise_asyncio_ban))
         logger.info(f"User {user_id} mute before answer")
-        msg: Message = await message.answer_photo(photo=captcha_image, caption=f'Привет, {user_name} пожалуйста'
-                                                                               f' ответьте {password} иначе Вас кикнут! ',
-                                                  reply_markup=gen_captcha_button_builder(password)
-                                                  )
+        caption: str = f'Привет, {user_name}пожалуйста ответьте {password} иначе Вас кикнут!'
+        msg: Message = await message.bot.send_photo(chat_id=chat_id,
+                                                    photo=captcha_image,
+                                                    caption=caption,
+                                                    reply_markup=gen_captcha_button_builder(password)
+                                                    )
         logger.info(f"User {user_id} throw captcha")
         # FIXME change to schedule (use crone, scheduler, nats..)
         await asyncio.sleep(time_rise_asyncio_ban)
