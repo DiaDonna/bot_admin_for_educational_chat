@@ -2,6 +2,9 @@ import asyncio
 
 from aiogram.types import ChatPermissions, CallbackQuery, Message, ReplyKeyboardRemove, User
 from datetime import timedelta
+
+from typing import List
+
 from tgbot.utils.texts import greeting_text
 from tgbot.utils.log_config import logger
 from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
@@ -18,7 +21,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
     # TODO    is bag if group not super , add handler admin, type group
     # FIXME 2) optimise ternary
     # FIXME 3) no check if admin
-    admin_ids: list[int] = await get_admins_ids_for_help_and_paste(call.message)
+    admin_ids: List[int] = await get_admins_ids_for_help_and_paste(call.message)
     password: int = int(call.data.split(':')[1])
     user_id: int = int(call.from_user.id)
     chat_id: int = int(call.message.chat.id)
@@ -42,6 +45,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
                 await call.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                     permissions=ChatPermissions(can_send_messages=True),
                                                     until_date=timedelta(seconds=minute_delta))
+                await call.bot.delete_message(chat_id=chat_id, message_id=call.message.message_id)
                 logger.info(f"User id:{user_id} name:{call.from_user.full_name}was pass")
                 capcha_flag_user_dict.update({user_id: True})
                 bot_user: User = await call.message.bot.get_me()

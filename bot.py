@@ -44,7 +44,6 @@ def register_all_handlers(dp):
     register_user(dp)
     register_echo(dp)
     register_incorrect_using_command(dp)
-    register_capcha(dp)
     register_callback_captcha(dp)
 
     register_bun(dp)
@@ -55,6 +54,7 @@ def register_all_handlers(dp):
     register_paste_command(dp)
     register_report_command(dp)
 
+    register_capcha(dp)
     register_thank_message(dp)
     register_reputation_command(dp)
 
