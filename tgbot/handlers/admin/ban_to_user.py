@@ -1,7 +1,7 @@
 import asyncio
 
 from aiogram import Dispatcher
-from aiogram.types import Message
+from aiogram.types import Message, User
 from aiogram.utils.exceptions import BadRequest
 from aiogram.utils.markdown import hlink
 
@@ -25,8 +25,8 @@ async def ban(message: Message, config: Config) -> None:
     """
 
     reason_for_ban: str = " ".join(message.text.split()[1:])
-    admin_who_banned = message.from_user
-    user_was_banned = message.reply_to_message.from_user
+    admin_who_banned: User = message.from_user
+    user_was_banned: User = message.reply_to_message.from_user
     msg_id_del: int = int(message.reply_to_message.message_id)
     minute_delta: int = config.time_delta.minute_delta
 
