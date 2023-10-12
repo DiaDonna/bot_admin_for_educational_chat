@@ -1,3 +1,5 @@
+import asyncio
+
 from aiogram import Dispatcher
 from aiogram.types import Message
 from aiogram.utils.exceptions import BadRequest
@@ -25,6 +27,8 @@ async def ban(message: Message, config: Config) -> None:
     reason_for_ban: str = " ".join(message.text.split()[1:])
     admin_who_banned = message.from_user
     user_was_banned = message.reply_to_message.from_user
+    msg_id_del: int = int(message.reply_to_message.message_id)
+    minute_delta: int = config.time_delta.minute_delta
 
     try:
         await message.bot.ban_chat_member(chat_id=message.chat.id, user_id=message.reply_to_message.from_user.id)
@@ -45,6 +49,11 @@ async def ban(message: Message, config: Config) -> None:
 
         await message.reply_to_message.answer(text=f'Пользователь {message.reply_to_message.from_user.get_mention()} '
                                                    f'<b>забанен</b> по причине: {reason_for_ban}')
+        await asyncio.sleep(minute_delta)
+        logger.info("msg {msg_id_del} del by bot".format(
+            msg_id_del=msg_id_del)
+        )
+        await message.bot.delete_message(message.chat.id, msg_id_del)
 
     except BadRequest as e:
         logger.error("Failed to ban chat member: {error!r}", exc_info=e)

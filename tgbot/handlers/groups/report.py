@@ -35,9 +35,11 @@ async def report_command(message: Message, config: Config):
         url_to_alert: str = '/'.join([url_to_alert, f'{message.reply_to_message.message_id}'])
 
     chat_label: str = hlink(message.chat.title, url_to_alert)
-    text = "[ALERT] Пользователь {user} пожаловался на сообщение в чате {chat}.".format(
+    text = "[ALERT] Пользователь {user} пожаловался на сообщение id: {msg_to_del} в чате {chat}.".format(
         user=message.from_user.get_mention(),
+        msg_to_del=message.reply_to_message.message_id,
         chat=chat_label,
+
     )
 
     await send_alert_to_admins(message=message, text=text, config=config)
