@@ -13,7 +13,7 @@ async def send_alert_to_admins(message: Message, text: str, config: Config) -> N
     """ Функция для отправки уведомлений администраторам по командам ban, ro и report """
 
     admin_ids: list[int] = await get_admins_ids_for_report(message=message, config=config)
-
+    # TODO delete report msg
     for admin_id in admin_ids:
         with suppress(Unauthorized):
             await message.bot.send_message(admin_id, text)

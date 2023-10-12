@@ -1,3 +1,5 @@
+import asyncio
+
 from babel.dates import format_timedelta
 from datetime import timedelta
 
@@ -32,6 +34,8 @@ async def ro(message: Message, config: Config) -> None:
 
     admin_who_restricted = message.from_user
     user_was_restricted = message.reply_to_message.from_user
+    msg_id_del: int = int(message.reply_to_message.message_id)
+    minute_delta: int = config.time_delta.minute_delta
     try:
         await message.chat.restrict(message.reply_to_message.from_user.id, can_send_messages=False, until_date=duration)
         logger.info("User {user} restricted by {admin} for {duration}".format(
@@ -54,7 +58,11 @@ async def ro(message: Message, config: Config) -> None:
                 user=message.reply_to_message.from_user.get_mention(),
                 duration=format_timedelta(duration, locale='ru', granularity="second", format="short"))
         )
-
+        await asyncio.sleep(minute_delta)
+        logger.info("msg {msg_id_del} del by bot".format(
+            msg_id_del=msg_id_del)
+        )
+        await message.bot.delete_message(message.chat.id, msg_id_del)
     except BadRequest as e:
         logger.error("Failed to restrict chat member: {error!r}", exc_info=e)
 

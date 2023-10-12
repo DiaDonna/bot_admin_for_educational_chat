@@ -44,7 +44,6 @@ def register_all_handlers(dp):
     register_user(dp)
     register_echo(dp)
     register_incorrect_using_command(dp)
-    register_capcha(dp)
     register_callback_captcha(dp)
 
     register_bun(dp)
@@ -55,6 +54,7 @@ def register_all_handlers(dp):
     register_paste_command(dp)
     register_report_command(dp)
 
+    register_capcha(dp)
     register_thank_message(dp)
     register_reputation_command(dp)
 
@@ -89,10 +89,12 @@ async def main():
     try:
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(
-            allowed_updates=AllowedUpdates.MESSAGE + AllowedUpdates.CALLBACK_QUERY or AllowedUpdates.EDITED_MESSAGE
-                            or AllowedUpdates.CHAT_MEMBER or AllowedUpdates.CHAT_JOIN_REQUEST
-                            or AllowedUpdates.INLINE_QUERY or AllowedUpdates.PRE_CHECKOUT_QUERY
-                            | AllowedUpdates.CALLBACK_QUERY
+            allowed_updates=(
+                    AllowedUpdates.CHAT_MEMBER
+                    | AllowedUpdates.CALLBACK_QUERY
+                    | AllowedUpdates.MESSAGE
+                    | AllowedUpdates.EDITED_MESSAGE
+            )
         )
     finally:
         await dp.storage.close()
