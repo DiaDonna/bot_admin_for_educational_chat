@@ -1,5 +1,5 @@
 from aiogram import Dispatcher
-from aiogram.types import ChatMemberUpdated
+from aiogram.types import ChatMemberUpdated, CallbackQuery
 from magic_filter import F
 
 from tgbot.utils.decorators import logging_message
@@ -17,7 +17,8 @@ async def new_member_info(message: ChatMemberUpdated, config: Config) -> None:
     """
     user_id: int = int(message.new_chat_member.user.id)
     if user_id not in [*user_dict.keys()]:
-        await throw_capcha(message=message, config=config)
+        if type(message) is not CallbackQuery:
+            await throw_capcha(message=message, config=config)
 
 
 def register_new_member_info(dp: Dispatcher):
