@@ -17,10 +17,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
                param call: CallbackQuery
                return None
         """
-    # TODO 1) new bag aiogram.utils.exceptions.MethodIsNotAvailable: Method is available only for supergroups
-    # TODO    is bag if group not super , add handler admin, type group
     # FIXME 2) optimise ternary
-    # FIXME 3) no check if admin
     admin_ids: List[int] = await get_admins_ids_for_help_and_paste(call.message)
     password: int = int(call.data.split(':')[1])
     user_id: int = int(call.from_user.id)
