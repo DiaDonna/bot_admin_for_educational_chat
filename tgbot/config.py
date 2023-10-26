@@ -4,9 +4,6 @@ from environs import Env
 # FIXME  now!!! dell dict, use aiogram method.
 # TODO add to do REDIS conf
 
-capcha_flag_user_dict: dict = dict()
-user_dict: dict = dict()
-
 
 @dataclass
 class RedisName:
