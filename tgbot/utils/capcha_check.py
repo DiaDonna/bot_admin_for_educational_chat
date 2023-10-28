@@ -25,6 +25,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
     chat_id: int = int(call.message.chat.id)
     minute_delta: int = config.time_delta.minute_delta
     redison = WorkerRedis(config)
+    list_users_redis: list = list(map(int, redison.get_all_capcha_user_key()))
     if user_id in admin_ids:
         msg_temp = await call.message.answer(text="Админ не балуйся \n"
                                                   "иди работать!")
@@ -36,8 +37,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
 
         logger.info(f"admin:{user_id} name:{call.from_user.full_name} was play")
     else:
-        if user_id in redison.get_all_capcha_user_key():
-            redison.add_capcha_flag(user_id, 0)
+        if user_id in list_users_redis:
             if password == redison.get_capcha_key(user_id):
                 await call.answer(text=f"{call.from_user.full_name}"
                                        f" you are pass!", show_alert=True)

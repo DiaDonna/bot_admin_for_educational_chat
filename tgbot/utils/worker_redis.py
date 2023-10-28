@@ -71,3 +71,15 @@ class WorkerRedis:
     def del_capcha_flag(self, user_id: int) -> None:
         with redis.Redis(host=self._get_host(), port=self._get_port(), decode_responses=True) as r:
             r.hdel(self._get_capcha_flag_map_name(), str(user_id))
+
+    def get_all_capcha_users_flag_key(self) -> list:
+        with redis.Redis(host=self._get_host(), port=self._get_port(), decode_responses=True) as r:
+            return r.hkeys(self._get_capcha_flag_map_name())
+
+    def del_all_key(self):
+        list_users_map_name: list = self.get_all_capcha_user_key()
+        list_users_capcha_flag_map: list = self.get_all_capcha_users_flag_key()
+        for key in list_users_map_name:
+            self.del_capcha_key(key)
+        for key in list_users_capcha_flag_map:
+            self.del_capcha_flag(key)

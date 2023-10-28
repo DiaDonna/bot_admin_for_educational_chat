@@ -42,6 +42,7 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
     time_rise_asyncio_ban: int = config.time_delta.time_rise_asyncio_ban
     minute_delta: int = config.time_delta.minute_delta
     redison = WorkerRedis(config)
+    list_users_redis: list = list(map(int, redison.get_all_capcha_user_key()))
     try:
         new_user_id: int = int(message.new_chat_member.user.id)
         user_id = new_user_id
@@ -60,6 +61,7 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
     else:
         password: int = random.randint(1000, 9999)
         redison.add_capcha_key(user_id, password)
+        print(f"redison.add_capcha_key{user_id}")
         captcha_image: InputFile = InputFile(gen_captcha(password))
         await message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                permissions=ChatPermissions(can_send_messages=False),
@@ -82,6 +84,7 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
             if redison.get_capcha_flag(user_id) == 1:
                 redison.del_capcha_flag(user_id)
                 redison.del_capcha_key(user_id)
+                logger.info(f"for User {user_id} pass del captcha key, flag")
             else:
                 await message.bot.kick_chat_member(chat_id=chat_id, user_id=user_id,
                                                    until_date=timedelta(seconds=minute_delta))
