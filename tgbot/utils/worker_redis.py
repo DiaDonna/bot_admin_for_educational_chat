@@ -77,9 +77,9 @@ class WorkerRedis:
             return r.hkeys(self._get_capcha_flag_map_name())
 
     def del_all_key(self):
-        list_users_map_name: list = self.get_all_capcha_user_key()
-        list_users_capcha_flag_map: list = self.get_all_capcha_users_flag_key()
+        list_users_map_name: list[str] = self.get_all_capcha_user_key()
+        list_users_capcha_flag_map: list[str] = self.get_all_capcha_users_flag_key()
         for key in list_users_map_name:
-            self.del_capcha_key(key)
+            self.del_capcha_key(int(key))
         for key in list_users_capcha_flag_map:
-            self.del_capcha_flag(key)
+            self.del_capcha_flag(int(key))

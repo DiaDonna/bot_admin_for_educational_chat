@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 
 from environs import Env
-# FIXME  now!!! dell dict, use aiogram method.
-# TODO add to do REDIS conf
 
 
 @dataclass

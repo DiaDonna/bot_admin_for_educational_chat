@@ -20,20 +20,16 @@ async def new_member_info(message: ChatMemberUpdated, config: Config) -> None:
     """
     # user_id: int = int(message.new_chat_member.user.id)
     # TODO Try another
-    redison: redis = WorkerRedis(config)
-    list_users_redis: list = list(map(int, redison.get_all_capcha_user_key()))
+    redis_users: redis = WorkerRedis(config)
+    list_users_redis: list[int] = list(map(int, redis_users.get_all_capcha_user_key()))
     user_id: int = int(message.new_chat_member.user.id)
     if user_id not in list_users_redis:
         if type(message) is not CallbackQuery:
-            print(type(message), "Type message")
-            print(list_users_redis, "all keys")
-            redison.add_capcha_flag(user_id, 0)
+            redis_users.add_capcha_flag(user_id, 0)
             await throw_capcha(message=message, config=config)
         else:
-            print(list_users_redis, "all keys")
             logger.info(f"new_member_info run in {type(message)}")
     else:
-        print(list_users_redis, "all keys")
         logger.info(f"new_member_info run in {message.chat.id}")
 
 
