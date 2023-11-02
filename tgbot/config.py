@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 
 from environs import Env
-# FIXME  now!!! dell dict, use aiogram method.
-# FIXME new_user_id: int = int(*user_dict.keys())
 
-capcha_flag_user_dict: dict = dict()
-user_dict: dict = dict()
+
+@dataclass
+class RedisName:
+    redis_container_name: str
+    redis_host_name: str
+    redis_port: int
 
 
 @dataclass
@@ -42,6 +44,7 @@ class Config:
     misc: Miscellaneous
     db: Database
     time_delta: TimingDelta
+    redis: RedisName
 
 
 def load_config(path: str = None):
@@ -66,6 +69,11 @@ def load_config(path: str = None):
         time_delta=TimingDelta(
             time_rise_asyncio_ban=int(env.str("TIME_RAISE_ASYNCIO_BAN")),
             minute_delta=int(env.str("TIME_ONE_MINUTE")),
-            time_rise_asyncio_del_msg=int(env.str("TIME_RAISE_ASYNCIO_DEL_MSG"))
+            time_rise_asyncio_del_msg=int(env.str("TIME_RAISE_ASYNCIO_DEL_MSG")),
+        ),
+        redis=RedisName(
+            redis_container_name=env.str("REDIS_CONTAINER_NAME"),
+            redis_host_name=env.str("REDIS_HOST_NAME"),
+            redis_port=int(env.str("REDIS_HOST_PORT")),
         )
     )

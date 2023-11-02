@@ -28,6 +28,7 @@ from tgbot.middlewares.check_groups import VerifiedGroupsMiddleware
 from tgbot.middlewares.db import DbSessionMiddleware
 from tgbot.middlewares.environment import EnvironmentMiddleware
 from tgbot.utils.log_config import logger
+from tgbot.utils.worker_redis import WorkerRedis
 
 
 def register_all_middlewares(dp, config):
@@ -54,13 +55,12 @@ def register_all_handlers(dp):
     register_paste_command(dp)
     register_report_command(dp)
 
-    register_capcha(dp)
     register_thank_message(dp)
     register_reputation_command(dp)
 
 
 async def main():
-    logger.info("Starting bot")
+    logger.info("Starting bot test")
     config = load_config(".env")
 
     # Creating DB engine for PostgreSQL
@@ -87,6 +87,8 @@ async def main():
     dp.middleware.setup(DbSessionMiddleware(db_pool))
 
     try:
+        redison = WorkerRedis(config)
+        redison.del_all_key()
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(
             allowed_updates=(
