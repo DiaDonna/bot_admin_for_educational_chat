@@ -1,5 +1,5 @@
 from aiogram import Dispatcher
-from aiogram.types import ChatMemberUpdated, CallbackQuery, ReplyKeyboardRemove
+from aiogram.types import ChatMemberUpdated, CallbackQuery, ChatMemberRestricted, ChatMemberBanned
 from magic_filter import F
 
 from tgbot.utils.log_config import logger
@@ -24,11 +24,12 @@ async def new_member_info(message: ChatMemberUpdated, config: Config) -> None:
     list_users_redis: list[int] = list(map(int, redis_users.get_all_capcha_user_key()))
     user_id: int = int(message.new_chat_member.user.id)
     if user_id not in list_users_redis:
-        if type(message) is not CallbackQuery:
+        if type(message) not in [CallbackQuery, ChatMemberRestricted, ChatMemberBanned]:
             redis_users.add_capcha_flag(user_id, 0)
             await throw_capcha(message=message, config=config)
+            logger.info(f"new_member_info run trow capcha {type(message)} ")
         else:
-            logger.info(f"new_member_info run in {type(message)}")
+            logger.info(f"new_member_info run in {type(message)} msg type")
     else:
         logger.info(f"new_member_info run in {message.chat.id}")
 
