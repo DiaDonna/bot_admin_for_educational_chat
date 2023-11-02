@@ -18,20 +18,18 @@ async def new_member_info(message: ChatMemberUpdated, config: Config) -> None:
     Handler for greeting new user in group and sending to him some use ful links
 
     """
-    # user_id: int = int(message.new_chat_member.user.id)
-    # TODO Try another
     redis_users: redis = WorkerRedis(config)
-    list_users_redis: list[int] = list(map(int, redis_users.get_all_capcha_user_key()))
     user_id: int = int(message.new_chat_member.user.id)
-    if user_id not in list_users_redis:
-        if type(message) not in [CallbackQuery, ChatMemberRestricted, ChatMemberBanned]:
+    chat_member: bool = message.old_chat_member.is_chat_member()
+    if not chat_member:
+        if type(message) not in [CallbackQuery]:
             redis_users.add_capcha_flag(user_id, 0)
             await throw_capcha(message=message, config=config)
             logger.info(f"new_member_info run trow capcha {type(message)} ")
         else:
             logger.info(f"new_member_info run in {type(message)} msg type")
     else:
-        logger.info(f"new_member_info run in {message.chat.id}")
+        logger.info(f"new_member_info run in {message.chat.id} type msg {type(message)}")
 
 
 def register_new_member_info(dp: Dispatcher):
