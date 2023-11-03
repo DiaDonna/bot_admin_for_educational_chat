@@ -60,7 +60,7 @@ def register_all_handlers(dp):
 
 
 async def main():
-    logger.info("Starting bot test")
+    logger.info("Starting bot")
     config = load_config(".env")
 
     # Creating DB engine for PostgreSQL
@@ -87,8 +87,7 @@ async def main():
     dp.middleware.setup(DbSessionMiddleware(db_pool))
 
     try:
-        redison = WorkerRedis(config)
-        redison.del_all_key()
+        WorkerRedis(config).del_all_key()
         await bot.delete_webhook(drop_pending_updates=True)
         await dp.start_polling(
             allowed_updates=(

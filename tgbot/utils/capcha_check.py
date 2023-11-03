@@ -9,7 +9,7 @@ from tgbot.utils.texts import greeting_text
 from tgbot.utils.log_config import logger
 from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
 from tgbot.config import Config
-from tgbot.utils.worker_redis import WorkerRedis
+from tgbot.utils.worker_redis import puke_redis
 
 
 async def check_captcha(call: CallbackQuery, config: Config):
@@ -24,8 +24,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
     user_id: int = int(call.from_user.id)
     chat_id: int = int(call.message.chat.id)
     minute_delta: int = config.time_delta.minute_delta
-    redis_user = WorkerRedis(config)
-    list_users_redis: list[int] = list(map(int, redis_user.get_all_capcha_user_key()))
+    list_users_redis: list[int] = list(map(int, puke_redis(config).get_all_capcha_user_key()))
     if user_id in admin_ids:
         msg_temp = await call.message.answer(text="Админ не балуйся \n"
                                                   "иди работать!")
@@ -38,7 +37,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
         logger.info(f"admin:{user_id} name:{call.from_user.full_name} was play")
     else:
         if user_id in list_users_redis:
-            if password == redis_user.get_capcha_key(user_id):
+            if password == puke_redis(config).get_capcha_key(user_id):
                 await call.answer(text=f"{call.from_user.full_name}"
                                        f" you are pass!", show_alert=True)
                 await call.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
@@ -46,7 +45,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
                                                     until_date=timedelta(seconds=minute_delta))
                 await call.bot.delete_message(chat_id=chat_id, message_id=call.message.message_id)
                 logger.info(f"User id:{user_id} name:{call.from_user.full_name}was pass")
-                redis_user.add_capcha_flag(user_id, 1)
+                puke_redis(config).add_capcha_flag(user_id, 1)
                 bot_user: User = await call.message.bot.get_me()
                 greeting: str = greeting_text(call=call, bot_user=bot_user)
                 msg: Message = await call.message.answer(text=greeting, disable_web_page_preview=True,
@@ -71,3 +70,4 @@ async def check_captcha(call: CallbackQuery, config: Config):
                                                         permissions=ChatPermissions(can_send_messages=False),
                                                         until_date=timedelta(seconds=minute_delta * 4))
             logger.info(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta * 4}")
+            

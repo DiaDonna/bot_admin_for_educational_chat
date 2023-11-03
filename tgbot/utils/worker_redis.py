@@ -1,4 +1,3 @@
-import asyncio
 import redis
 from tgbot.config import Config
 
@@ -77,9 +76,13 @@ class WorkerRedis:
             return r.hkeys(self._get_capcha_flag_map_name())
 
     def del_all_key(self):
-        list_users_map_name: list[str] = self.get_all_capcha_user_key()
-        list_users_capcha_flag_map: list[str] = self.get_all_capcha_users_flag_key()
-        for key in list_users_map_name:
+        user_map_names: list[str] = self.get_all_capcha_user_key()
+        users_capcha_flag: list[str] = self.get_all_capcha_users_flag_key()
+        for key in user_map_names:
             self.del_capcha_key(int(key))
-        for key in list_users_capcha_flag_map:
+        for key in users_capcha_flag:
             self.del_capcha_flag(int(key))
+
+
+def puke_redis(config: Config):
+    return WorkerRedis(config)

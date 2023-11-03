@@ -13,7 +13,7 @@ from tgbot.keyboards.Inline.captcha_keys import gen_captcha_button_builder
 from tgbot.utils.log_config import logger
 from tgbot.utils.decorators import logging_message
 from tgbot.config import Config
-from tgbot.utils.worker_redis import WorkerRedis
+from tgbot.utils.worker_redis import puke_redis
 
 
 def gen_captcha(temp_integer: int) -> BytesIO:
@@ -41,7 +41,6 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
     chat_id: int = int(message.chat.id)
     time_rise_asyncio_ban: int = config.time_delta.time_rise_asyncio_ban
     minute_delta: int = config.time_delta.minute_delta
-    redis_users = WorkerRedis(config)
     try:
         new_user_id: int = int(message.new_chat_member.user.id)
         user_id = new_user_id
@@ -59,7 +58,7 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
         logger.info(f"admin:{user_id} name:{message.from_user.full_name} was play")
     else:
         password: int = random.randint(1000, 9999)
-        redis_users.add_capcha_key(user_id, password)
+        puke_redis(config).add_capcha_key(user_id, password)
         captcha_image: InputFile = InputFile(gen_captcha(password))
         await message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                permissions=ChatPermissions(can_send_messages=False),
@@ -76,21 +75,21 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
         await asyncio.sleep(time_rise_asyncio_ban)
         try:
             await msg.delete()
+            logger.info(f"for User {user_id} del msg captcha")
         except MessageToDeleteNotFound as error:
             logger.info(f"{error} msg {user_id}")
         try:
-            if redis_users.get_capcha_flag(user_id) == 1:
-                redis_users.del_capcha_flag(user_id)
-                redis_users.del_capcha_key(user_id)
-                logger.info(f"for User {user_id} pass del captcha key, flag")
+            if puke_redis(config).get_capcha_flag(user_id) == 1:
+                puke_redis(config).del_capcha_flag(user_id)
+                puke_redis(config).del_capcha_key(user_id)
+                logger.info(f"for User {user_id} pass\n del capcha key, flag")
             else:
                 await message.bot.kick_chat_member(chat_id=chat_id, user_id=user_id,
                                                    until_date=timedelta(seconds=minute_delta))
                 logger.info(f"User {user_id} was kicked = {minute_delta}")
-                redis_users.del_capcha_flag(user_id)
-                redis_users.del_capcha_key(user_id)
-                logger.info(f"for User {user_id} pass del captcha key, flag")
-            logger.info(f"for User {user_id} del msg captcha")
+                puke_redis(config).del_capcha_flag(user_id)
+                puke_redis(config).del_capcha_key(user_id)
+                logger.info(f"for User {user_id} no pass\n del capcha key, flag")
         except TypeError as err:
             logger.info(f"for User {user_id} not have captcha flag")
 
