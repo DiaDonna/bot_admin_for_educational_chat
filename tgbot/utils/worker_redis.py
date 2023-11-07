@@ -84,5 +84,5 @@ class WorkerRedis:
             self.del_capcha_flag(int(key))
 
 
-def puke_redis(config: Config):
+def generate_redis(config: Config):
     return WorkerRedis(config)

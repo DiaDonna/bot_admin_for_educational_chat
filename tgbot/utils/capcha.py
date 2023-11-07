@@ -13,7 +13,7 @@ from tgbot.keyboards.Inline.captcha_keys import gen_captcha_button_builder
 from tgbot.utils.log_config import logger
 from tgbot.utils.decorators import logging_message
 from tgbot.config import Config
-from tgbot.utils.worker_redis import puke_redis
+from tgbot.utils.worker_redis import generate_redis
 
 
 def gen_captcha(temp_integer: int) -> BytesIO:
@@ -57,18 +57,18 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
         await msg.delete()
         logger.info(f"admin:{user_id} name:{message.from_user.full_name} was play")
     else:
-        password: int = random.randint(1000, 9999)
-        puke_redis(config).add_capcha_key(user_id, password)
-        captcha_image: InputFile = InputFile(gen_captcha(password))
+        capcha_key: int = random.randint(1000, 9999)
+        generate_redis(config).add_capcha_key(user_id, capcha_key)
+        captcha_image: InputFile = InputFile(gen_captcha(capcha_key))
         await message.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
                                                permissions=ChatPermissions(can_send_messages=False),
                                                until_date=timedelta(seconds=time_rise_asyncio_ban))
         logger.info(f"User {user_id} mute before answer")
-        caption: str = f'Привет, {user_name} пожалуйста ответьте {password} иначе Вас кикнут!'
+        caption: str = f'Привет, {user_name} пожалуйста ответьте {capcha_key} иначе Вас кикнут!'
         msg: Message = await message.bot.send_photo(chat_id=chat_id,
                                                     photo=captcha_image,
                                                     caption=caption,
-                                                    reply_markup=gen_captcha_button_builder(password)
+                                                    reply_markup=gen_captcha_button_builder(capcha_key)
                                                     )
         logger.info(f"User {user_id} throw captcha")
         # FIXME change to schedule (use crone, scheduler, nats..)
@@ -79,16 +79,16 @@ async def throw_capcha(message: ChatMemberUpdated, config: Config) -> None:
         except MessageToDeleteNotFound as error:
             logger.info(f"{error} msg {user_id}")
         try:
-            if puke_redis(config).get_capcha_flag(user_id) == 1:
-                puke_redis(config).del_capcha_flag(user_id)
-                puke_redis(config).del_capcha_key(user_id)
+            if generate_redis(config).get_capcha_flag(user_id) == 1:
+                generate_redis(config).del_capcha_flag(user_id)
+                generate_redis(config).del_capcha_key(user_id)
                 logger.info(f"for User {user_id} pass\n del capcha key, flag")
             else:
                 await message.bot.kick_chat_member(chat_id=chat_id, user_id=user_id,
                                                    until_date=timedelta(seconds=minute_delta))
                 logger.info(f"User {user_id} was kicked = {minute_delta}")
-                puke_redis(config).del_capcha_flag(user_id)
-                puke_redis(config).del_capcha_key(user_id)
+                generate_redis(config).del_capcha_flag(user_id)
+                generate_redis(config).del_capcha_key(user_id)
                 logger.info(f"for User {user_id} no pass\n del capcha key, flag")
         except TypeError as err:
             logger.info(f"for User {user_id} not have captcha flag")
