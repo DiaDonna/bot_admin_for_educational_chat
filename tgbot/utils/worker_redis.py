@@ -1,7 +1,6 @@
 import redis
 
 
-
 class WorkerRedis:
     """
         Class: work with redis context manager
