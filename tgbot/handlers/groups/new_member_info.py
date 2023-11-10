@@ -6,7 +6,6 @@ from tgbot.utils.log_config import logger
 from tgbot.utils.decorators import logging_message
 from tgbot.utils.capcha import throw_capcha
 from tgbot.config import Config
-from tgbot.utils.worker_redis import WorkerRedis, generate_redis
 
 
 @logging_message
@@ -21,7 +20,7 @@ async def new_member_info(message: ChatMemberUpdated, config: Config) -> None:
     chat_member: bool = message.old_chat_member.is_chat_member()
     if not chat_member:
         if type(message) not in [CallbackQuery]:
-            generate_redis(config).add_capcha_flag(user_id, 0)
+            config.redis_worker.add_capcha_flag(user_id, 0)
             await throw_capcha(message=message, config=config)
             logger.info(f"new_member_info run throw capcha {type(message)}\n"
                         f"for user {user_id} ")

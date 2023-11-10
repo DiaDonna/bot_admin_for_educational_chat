@@ -1,13 +1,7 @@
 from dataclasses import dataclass
 
 from environs import Env
-
-
-@dataclass
-class RedisName:
-    redis_container_name: str
-    redis_host_name: str
-    redis_port: int
+from tgbot.utils.worker_redis import WorkerRedis
 
 
 @dataclass
@@ -44,7 +38,7 @@ class Config:
     misc: Miscellaneous
     db: Database
     time_delta: TimingDelta
-    redis: RedisName
+    redis_worker: WorkerRedis
 
 
 def load_config(path: str = None):
@@ -71,9 +65,7 @@ def load_config(path: str = None):
             minute_delta=int(env.str("TIME_ONE_MINUTE")),
             time_rise_asyncio_del_msg=int(env.str("TIME_RAISE_ASYNCIO_DEL_MSG")),
         ),
-        redis=RedisName(
-            redis_container_name=env.str("REDIS_CONTAINER_NAME"),
-            redis_host_name=env.str("REDIS_HOST_NAME"),
-            redis_port=int(env.str("REDIS_HOST_PORT")),
-        )
+        redis_worker=WorkerRedis(redis_container_name=env.str("REDIS_CONTAINER_NAME"),
+                                 redis_host_name=env.str("REDIS_HOST_NAME"),
+                                 redis_port=int(env.str("REDIS_HOST_PORT")), )
     )

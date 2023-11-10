@@ -1,5 +1,5 @@
 import redis
-from tgbot.config import Config
+
 
 
 class WorkerRedis:
@@ -21,11 +21,11 @@ class WorkerRedis:
 
     """
 
-    def __init__(self, config: Config):
-        self.__host: str = config.redis.redis_host_name
-        self.__port: int = config.redis.redis_port
-        self.__users_map_name: str = 'users_capcha_key_map'
-        self.__users_capcha_flag_map_name: str = 'users_capcha_flag_map'
+    def __init__(self, redis_container_name, redis_host_name, redis_port):
+        self.__host: str = redis_host_name
+        self.__port: int = redis_port
+        self.__users_map_name: str = f'{redis_container_name}_users_capcha_key_map'
+        self.__users_capcha_flag_map_name: str = f'{redis_container_name}_users_capcha_flag_map'
 
     def _get_host(self) -> str:
         return self.__host
@@ -83,6 +83,3 @@ class WorkerRedis:
         for key in users_capcha_flag:
             self.del_capcha_flag(int(key))
 
-
-def generate_redis(config: Config):
-    return WorkerRedis(config)
