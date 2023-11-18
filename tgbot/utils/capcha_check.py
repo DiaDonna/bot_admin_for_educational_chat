@@ -8,7 +8,7 @@ from typing import List
 from tgbot.utils.texts import greeting_text
 from tgbot.utils.log_config import logger
 from tgbot.utils.admin_ids import get_admins_ids_for_help_and_paste
-from tgbot.config import user_dict, capcha_flag_user_dict, Config
+from tgbot.config import Config
 
 
 async def check_captcha(call: CallbackQuery, config: Config):
@@ -17,15 +17,13 @@ async def check_captcha(call: CallbackQuery, config: Config):
                param call: CallbackQuery
                return None
         """
-    # TODO 1) new bag aiogram.utils.exceptions.MethodIsNotAvailable: Method is available only for supergroups
-    # TODO    is bag if group not super , add handler admin, type group
     # FIXME 2) optimise ternary
-    # FIXME 3) no check if admin
     admin_ids: List[int] = await get_admins_ids_for_help_and_paste(call.message)
-    password: int = int(call.data.split(':')[1])
+    capcha_key: int = int(call.data.split(':')[1])
     user_id: int = int(call.from_user.id)
     chat_id: int = int(call.message.chat.id)
     minute_delta: int = config.time_delta.minute_delta
+    list_users_redis: list[int] = list(map(int, config.redis_worker.get_all_capcha_user_key()))
     if user_id in admin_ids:
         msg_temp = await call.message.answer(text="Админ не балуйся \n"
                                                   "иди работать!")
@@ -37,9 +35,8 @@ async def check_captcha(call: CallbackQuery, config: Config):
 
         logger.info(f"admin:{user_id} name:{call.from_user.full_name} was play")
     else:
-        if user_id in user_dict.keys():
-            capcha_flag_user_dict.update({user_id: False})
-            if password == user_dict.get(user_id):
+        if user_id in list_users_redis:
+            if capcha_key == config.redis_worker.get_capcha_key(user_id):
                 await call.answer(text=f"{call.from_user.full_name}"
                                        f" you are pass!", show_alert=True)
                 await call.bot.restrict_chat_member(chat_id=chat_id, user_id=user_id,
@@ -47,7 +44,7 @@ async def check_captcha(call: CallbackQuery, config: Config):
                                                     until_date=timedelta(seconds=minute_delta))
                 await call.bot.delete_message(chat_id=chat_id, message_id=call.message.message_id)
                 logger.info(f"User id:{user_id} name:{call.from_user.full_name}was pass")
-                capcha_flag_user_dict.update({user_id: True})
+                config.redis_worker.add_capcha_flag(user_id, 1)
                 bot_user: User = await call.message.bot.get_me()
                 greeting: str = greeting_text(call=call, bot_user=bot_user)
                 msg: Message = await call.message.answer(text=greeting, disable_web_page_preview=True,
@@ -72,3 +69,4 @@ async def check_captcha(call: CallbackQuery, config: Config):
                                                         permissions=ChatPermissions(can_send_messages=False),
                                                         until_date=timedelta(seconds=minute_delta * 4))
             logger.info(f"User id:{user_id} name:{call.from_user.full_name} was mute seconds = {minute_delta * 4}")
+            
