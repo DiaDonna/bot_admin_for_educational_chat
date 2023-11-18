@@ -1,12 +1,12 @@
 name: tg_admin_bot
 env:
   PROJECT_NAME: "tg_admin_bot"
-  BRANCH: "dev"
+  BRANCH: "redis_change_dict"
   VERSION: ${{ github.sha }}
 
 on:
   push:
-    branches: [ dev ]
+    branches: [ redis_change_dict ]
 
 jobs:
   deploy:
